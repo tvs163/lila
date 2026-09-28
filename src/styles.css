@@ -1,0 +1,224 @@
+@import "tailwindcss";
+@import "@fontsource/cormorant-garamond/cyrillic-500.css";
+@import "@fontsource/cormorant-garamond/cyrillic-600.css";
+@import "@fontsource/cormorant-garamond/cyrillic-500-italic.css";
+@import "@fontsource/cormorant-garamond/latin-500.css";
+@import "@fontsource/cormorant-garamond/latin-600.css";
+@import "@fontsource/cormorant-garamond/latin-500-italic.css";
+@import "@fontsource/manrope/cyrillic-400.css";
+@import "@fontsource/manrope/cyrillic-500.css";
+@import "@fontsource/manrope/cyrillic-600.css";
+@import "@fontsource/manrope/latin-400.css";
+@import "@fontsource/manrope/latin-500.css";
+@import "@fontsource/manrope/latin-600.css";
+
+@theme {
+  --color-bg: #100e1c;
+  --color-bg-raise: #19152c;
+  --color-surface: #241c3c;
+  --color-fg: #f3ecdf;
+  --color-muted: #c4b8a4;
+  --color-gold: #d4b072;
+  --color-gold-dim: #8c7040;
+  --color-violet: #8d78d6;
+  --color-line: #43385f;
+  --font-display: "Cormorant Garamond", "Times New Roman", serif;
+  --font-sans: "Manrope", system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    background: var(--color-bg);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--color-bg);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    line-height: 1.5;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--color-gold) 35%, transparent);
+    color: var(--color-fg);
+  }
+}
+
+.nebula {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(8px);
+  opacity: 0.55;
+}
+
+.nebula-a {
+  top: -8rem;
+  left: -6rem;
+  height: 28rem;
+  width: 28rem;
+  background: radial-gradient(circle, color-mix(in oklab, var(--color-violet) 42%, transparent), transparent 68%);
+  animation: nebula-drift 28s ease-in-out infinite;
+}
+
+.nebula-b {
+  right: -8rem;
+  bottom: -6rem;
+  height: 26rem;
+  width: 26rem;
+  background: radial-gradient(circle, color-mix(in oklab, var(--color-gold) 28%, transparent), transparent 70%);
+  animation: nebula-drift 36s ease-in-out infinite reverse;
+}
+
+.star {
+  position: absolute;
+  border-radius: 999px;
+  background: var(--color-fg);
+  opacity: 0.35;
+  animation: star-twinkle 4.8s ease-in-out infinite;
+}
+
+.panel {
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--color-fg) 8%, transparent),
+    0 18px 50px color-mix(in oklab, black 35%, transparent);
+}
+
+.cell {
+  transition:
+    transform 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.cell:active {
+  transform: scale(0.96);
+}
+
+.cell-here {
+  animation: cell-pulse 2.6s ease-in-out infinite;
+}
+
+.cell-travel {
+  background: color-mix(in oklab, var(--color-gold) 72%, transparent);
+  color: var(--color-bg);
+}
+
+.cell-goal {
+  border-color: var(--color-gold);
+  box-shadow: 0 0 10px color-mix(in oklab, var(--color-gold) 40%, transparent);
+}
+
+.glow-action {
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--color-gold) 75%, transparent),
+    0 0 28px color-mix(in oklab, var(--color-violet) 55%, transparent);
+}
+
+.die-pop {
+  animation: die-pop 320ms ease-out;
+}
+
+@keyframes nebula-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(1.5rem, 1rem, 0);
+  }
+}
+
+@keyframes star-twinkle {
+  0%,
+  100% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 0.85;
+  }
+}
+
+@keyframes cell-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--color-gold) 0%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 14px 1px color-mix(in oklab, var(--color-gold) 75%, transparent);
+  }
+}
+
+@keyframes die-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.86);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.dice-face {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 16px;
+  border: 1px solid var(--color-gold);
+  background: #1b1630;
+  box-shadow:
+    inset 0 0 22px rgb(141 120 214 / 55%),
+    0 0 18px rgb(212 176 114 / 35%);
+  font-family: var(--font-display);
+  font-size: 2.75rem;
+  line-height: 1;
+  color: #f3ecdf;
+  backface-visibility: hidden;
+}
+
+.dice-orbit {
+  animation: spin-orbit 12s linear infinite;
+}
+
+@keyframes spin-orbit {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nebula,
+  .star,
+  .cell-here,
+  .die-pop,
+  .dice-orbit {
+    animation: none;
+  }
+
+  .cell {
+    transition: none;
+  }
+}
