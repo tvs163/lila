@@ -49,10 +49,12 @@ export function LetterCard() {
     }
   }
 
+  const early = log.filter((entry) => entry.kind !== "unborn").length < 20;
+
   async function save(current: PathLetter) {
     setError("");
     try {
-      await downloadLetter(current, nickname, intention);
+      await downloadLetter(current, nickname, intention, early);
     } catch {
       setError("Файл не открылся. Текст письма остаётся здесь.");
     }
@@ -65,7 +67,8 @@ export function LetterCard() {
         <p className="mt-2 text-sm text-muted">
           Под твой вопрос: какой ты, где сила и где слабина, как быть с чувствами, какие практики помогут и чем себя напомнить. Файл можно скачать.
         </p>
-        <Button className="mt-4 w-full" variant="glow" disabled={busy} onClick={() => void gather()}>
+        <LetterFine early={early} />
+        <Button className="mt-3 w-full" variant="glow" disabled={busy} onClick={() => void gather()}>
           {busy ? "Проводник собирает письмо…" : "Собрать и скачать"}
         </Button>
         {error ? <p className="mt-2 text-sm text-gold">{error}</p> : null}
@@ -104,10 +107,20 @@ export function LetterCard() {
         <h4 className="text-sm tracking-widest text-gold uppercase">У тебя уже есть</h4>
         <p className="mt-2">{letter.heart}</p>
       </section>
+      <LetterFine early={early} />
       <Button className="w-full" variant="glow" onClick={() => void save(letter)}>
         Скачать PDF
       </Button>
       {error ? <p className="text-sm text-gold">{error}</p> : null}
+    </div>
+  );
+}
+
+function LetterFine({ early }: { early: boolean }) {
+  return (
+    <div className="mt-3 flex flex-col gap-1 text-[11px] leading-snug text-muted">
+      {early ? <p>Чем больше игры пройдено, тем точнее форма личности в файле.</p> : null}
+      <p>* Заключение не является рекомендациями. Игра носит развлекательный характер.</p>
     </div>
   );
 }

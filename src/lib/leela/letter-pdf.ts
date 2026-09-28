@@ -27,7 +27,7 @@ function wrap(text: string, widthOf: (line: string) => number, max: number): str
   return lines;
 }
 
-export async function downloadLetter(letter: PathLetter, nickname: string, intention: string) {
+export async function downloadLetter(letter: PathLetter, nickname: string, intention: string, early: boolean) {
   const bytes = await fetch("/fonts/DejaVuSans.ttf").then((response) => {
     if (!response.ok) throw new Error("font");
     return response.arrayBuffer();
@@ -76,7 +76,9 @@ export async function downloadLetter(letter: PathLetter, nickname: string, inten
   write("Практики под твой вопрос", 13, gold, 8);
   letter.tools.forEach((tool, index) => write(`${index + 1}. ${tool}`, 11, ink, 8));
   write("У тебя уже есть", 13, gold, 8);
-  write(letter.heart, 11, ink, 8);
+  write(letter.heart, 11, ink, 18);
+  if (early) write("Чем больше игры пройдено, тем точнее форма личности в этом файле.", 8, mute, 4);
+  write("* Заключение не является рекомендациями. Игра носит развлекательный характер.", 8, mute, 4);
 
   const file = await pdf.save();
   const copy = new Uint8Array(file.byteLength);
