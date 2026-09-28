@@ -3,7 +3,6 @@ import { useGame } from "@/lib/game-store";
 
 export function ConductorTurn({ at }: { at?: number }) {
   const intention = useGame((state) => state.intention);
-  const guide = useGame((state) => state.guide);
   const log = useGame((state) => state.log);
   const voices = useGame((state) => state.voices);
   const listeningAt = useGame((state) => state.listeningAt);
@@ -12,13 +11,11 @@ export function ConductorTurn({ at }: { at?: number }) {
   if (!latest) return null;
   const speech = conduct(latest, intention);
   const heard = voices.find((item) => item.at === latest.at);
-  const guideName = guide === "soma" ? "Сома" : "Агни";
   const question = heard?.arrive?.question || speech.questions[0] || "";
   const listening = listeningAt === latest.at && !heard?.arrive;
 
   return (
     <div className="text-left">
-      <p className="text-sm tracking-widest text-gold uppercase">{guideName}</p>
       <p className="mt-2">{speech.move}</p>
       {speech.title ? <h3 className="mt-3 font-display text-2xl">{speech.title}</h3> : null}
       {speech.essence ? <p className="mt-2">{speech.essence}</p> : null}

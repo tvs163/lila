@@ -261,26 +261,15 @@
 
 .lila-word {
   position: relative;
-  margin: -0.35rem 0 0;
-  font-family: var(--font-display);
-  font-style: italic;
-  font-weight: 500;
-  font-size: 1.7rem;
-  letter-spacing: 0.28em;
-  line-height: 1;
-  color: #f7f1e6;
-  text-indent: 0.28em;
-  text-shadow:
-    0 0 12px rgb(255 244 228 / 80%),
-    0 0 28px rgb(212 176 114 / 55%),
-    0 0 48px rgb(141 120 214 / 35%);
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
-  mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
+  width: 12rem;
+  height: auto;
+  margin: 0.15rem 0 0;
+  filter: drop-shadow(0 0 14px rgb(255 244 228 / 40%));
 }
 
 .lila-logo-lg .lila-word {
-  margin-top: -0.7rem;
-  font-size: 3.4rem;
+  width: 14rem;
+  margin-top: 0.35rem;
 }
 
 @keyframes lila-breathe {

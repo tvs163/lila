@@ -73,7 +73,6 @@ export function Play() {
   const briefPending = Boolean(wantedKey) && !briefReady;
   const ready = canRollNow(lastTurnAt, true, won, now) && !spin && !briefPending;
   const waitMs = lastTurnAt == null ? 0 : Math.max(0, HOUR_MS - (now - lastTurnAt));
-  const guideName = guide === "soma" ? "Сома" : "Агни";
   const breathFresh = lastBreathAt != null && now - lastBreathAt < BREATH_FRESH_MS;
   const skipBreath = extraLeft > 0 || breathFresh;
   const shown = log.find((entry) => entry.at === turnAt) ?? latest;
@@ -159,7 +158,6 @@ export function Play() {
         <div className="flex min-w-0 items-center gap-3">
           <LilaLogo />
           <div className="min-w-0">
-            <p className="text-sm tracking-widest text-gold uppercase">{guideName}</p>
             <h1 className="truncate font-display text-3xl">{nickname}</h1>
           </div>
         </div>
@@ -275,7 +273,6 @@ export function Play() {
                   </>
                 ) : innerBrief ? (
                   <>
-                    <p className="text-sm tracking-widest text-gold uppercase">{guideName}</p>
                     <p className="mt-3">{innerBrief}</p>
                     <Button className="mt-5 w-full" variant="glow" onClick={() => setPane("field")}>
                       Следующий ход

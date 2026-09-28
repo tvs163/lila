@@ -9,7 +9,6 @@ export function Intention() {
   const setIntention = useGame((state) => state.setIntention);
   const [text, setText] = useState("");
   const [error, setError] = useState("");
-  const name = guide === "soma" ? "Сома" : "Агни";
   const glad = guide === "soma" ? "Я рада, что ты не спешишь." : "Я рад, что ты не спешишь.";
 
   function submit(event: FormEvent) {
@@ -26,8 +25,7 @@ export function Intention() {
     <form onSubmit={submit} className="mx-auto flex min-h-dvh w-full max-w-lg flex-col justify-center gap-6 px-5 py-12">
       <header>
         <LilaLogo />
-        <p className="mt-4 text-sm tracking-widest text-gold uppercase">{name}</p>
-        <h1 className="mt-2 font-display text-5xl">{nickname}, с чем ты входишь</h1>
+        <h1 className="mt-4 font-display text-5xl">{nickname}, с чем ты входишь</h1>
         <p className="mt-4 text-muted">
           {glad} Не план на год, а вопрос, который уже не отпускает. Он уйдёт проводнику вместе с твоим рисунком — до первого хода.
         </p>

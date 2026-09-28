@@ -38,7 +38,7 @@ export function LilaLogo({ large = false }: { large?: boolean }) {
     <div className={large ? "lila-logo lila-logo-lg" : "lila-logo"}>
       <span className="lila-aura" aria-hidden />
       <img className="lila-figure" src="/lila-figure.png" alt="" />
-      <p className="lila-word">LILA</p>
+      {large ? <img className="lila-word" src="/lila-word.png" alt="LILA" /> : null}
     </div>
   );
 }
