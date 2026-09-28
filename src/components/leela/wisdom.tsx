@@ -75,7 +75,7 @@ export function WisdomFloat({ open }: { open: boolean }) {
       fade = window.setTimeout(() => {
         setIndex((value) => (value + 1) % LINES.length);
         setClear(true);
-      }, 350);
+      }, 700);
     }, HOLD_MS);
     return () => {
       window.clearInterval(timer);
@@ -87,20 +87,27 @@ export function WisdomFloat({ open }: { open: boolean }) {
   const line = LINES[index] ?? LINES[0];
 
   return createPortal(
-    <div className="pointer-events-none fixed inset-0 z-[70] flex items-center justify-center px-5">
-      <div className="absolute inset-0 bg-bg/55 backdrop-blur-[2px]" />
-      <article
-        className={`relative w-full max-w-md rounded-3xl border border-gold-dim bg-surface/80 p-6 backdrop-blur-md transition-opacity duration-300 ${clear ? "opacity-100" : "opacity-0"}`}
-        role="status"
-      >
-        <p className="text-sm tracking-widest text-gold uppercase">Пока проводник собирает</p>
-        <p className="mt-4 font-display text-3xl leading-snug text-fg">{line.text}</p>
-        <p className="mt-5 text-sm text-muted">
-          {line.who}
-          <span className="text-gold"> · </span>
-          {line.when}
-        </p>
-      </article>
+    <div className="pointer-events-none fixed inset-0 z-[70]">
+      <div className="wisdom-veil absolute inset-0 backdrop-blur-[1px]" />
+      <p className="wisdom-note absolute inset-x-6 top-[12%] text-center font-display text-2xl leading-snug text-fg/90 sm:text-3xl">
+        Пока проводник думает — позволь показать тебе мои любимые мудрости
+      </p>
+      <div className="absolute inset-0 flex items-center justify-center px-6">
+        <article
+          className={`wisdom-card relative w-full max-w-md px-2 py-8 text-center ${clear ? "smoke-in" : "smoke-out"}`}
+          role="status"
+        >
+          <span className="wisdom-wisp top-2 left-6 h-16 w-24" />
+          <span className="wisdom-wisp top-10 right-4 h-20 w-28 [animation-delay:-2s]" />
+          <span className="wisdom-wisp bottom-0 left-1/3 h-14 w-32 [animation-delay:-4s]" />
+          <p className="relative font-display text-3xl leading-snug text-fg">{line.text}</p>
+          <p className="relative mt-6 text-sm text-muted">
+            {line.who}
+            <span className="text-gold"> · </span>
+            {line.when}
+          </p>
+        </article>
+      </div>
     </div>,
     document.body,
   );

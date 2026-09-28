@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { Button, fieldClass } from "@/components/ui/button";
+import { LilaLogo } from "@/components/leela/shell";
 import { useGame } from "@/lib/game-store";
 
 export function Intention() {
@@ -24,7 +25,8 @@ export function Intention() {
   return (
     <form onSubmit={submit} className="mx-auto flex min-h-dvh w-full max-w-lg flex-col justify-center gap-6 px-5 py-12">
       <header>
-        <p className="text-sm tracking-widest text-gold uppercase">{name}</p>
+        <LilaLogo />
+        <p className="mt-4 text-sm tracking-widest text-gold uppercase">{name}</p>
         <h1 className="mt-2 font-display text-5xl">{nickname}, с чем ты входишь</h1>
         <p className="mt-4 text-muted">
           {glad} Не план на год, а вопрос, который уже не отпускает. Он уйдёт проводнику вместе с твоим рисунком — до первого хода.

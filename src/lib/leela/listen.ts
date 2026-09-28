@@ -2,7 +2,7 @@ import { squareById } from "@/lib/leela/board";
 import { conduct } from "@/lib/leela/conductor";
 import { askGuide, type GuideResult } from "@/lib/leela/guide";
 import type { RollOutcome } from "@/lib/leela/rules";
-import type { BirthProfile, GuideId, JournalEntry } from "@/lib/game-store";
+import type { BirthProfile, Gender, GuideId, JournalEntry } from "@/lib/game-store";
 import { readInnerChart } from "@/lib/vedic/chart";
 import { birthPortrait } from "@/lib/vedic/portrait";
 import { personalNote } from "@/lib/vedic/voice";
@@ -11,12 +11,18 @@ export type GuideLine = { speech: string; question: string };
 
 type ListenBase = {
   guide: GuideId | null;
+  gender?: Gender | null;
   intention: string;
   journal: JournalEntry[];
   birth: BirthProfile | null;
   outcome: RollOutcome;
   brief?: string;
 };
+
+export function playerOf(gender: Gender | null | undefined, guide: GuideId | null): "woman" | "man" {
+  if (gender === "woman" || gender === "man") return gender;
+  return guide === "soma" ? "man" : "woman";
+}
 
 function tendencyFor(birth: BirthProfile | null, squareId: number): string {
   if (!birth || squareId <= 0) return "";
@@ -33,6 +39,7 @@ function payload(base: ListenBase, kind: "arrive" | "reply", reply = "") {
   return {
     kind,
     guide: base.guide === "soma" ? ("soma" as const) : ("agni" as const),
+    player: playerOf(base.gender, base.guide),
     intention: base.intention.slice(0, 300),
     facts: speech.move.slice(0, 700),
     cell: speech.title.slice(0, 160),
@@ -46,12 +53,18 @@ function payload(base: ListenBase, kind: "arrive" | "reply", reply = "") {
   };
 }
 
-export async function listenPrepare(birth: BirthProfile, guide: GuideId | null, intention: string): Promise<GuideResult> {
+export async function listenPrepare(
+  birth: BirthProfile,
+  guide: GuideId | null,
+  intention: string,
+  player: "woman" | "man",
+): Promise<GuideResult> {
   try {
     return await askGuide({
       data: {
         kind: "prepare",
         guide: guide === "soma" ? "soma" : "agni",
+        player,
         intention: intention.slice(0, 300),
         facts: "Разбор до первого хода. Клетки ещё нет. Собери понимание под вопрос человека, его рисунок и свой голос.",
         cell: "",

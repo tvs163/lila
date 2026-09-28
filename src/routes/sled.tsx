@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Shell } from "@/components/leela/shell";
+import { Shell, LilaLogo } from "@/components/leela/shell";
 import { Button, fieldClass } from "@/components/ui/button";
 import { readAccounts, type PlayAccount } from "@/lib/leela/accounts";
 
@@ -49,7 +49,8 @@ function SledPage() {
     <Shell>
       <main className="mx-auto flex min-h-dvh w-full max-w-3xl flex-col gap-6 px-4 py-8">
         <header>
-          <p className="text-sm tracking-widest text-gold uppercase">Только для тебя</p>
+          <LilaLogo />
+          <p className="mt-4 text-sm tracking-widest text-gold uppercase">Только для тебя</p>
           <h1 className="mt-2 font-display text-5xl">След игры</h1>
           <p className="mt-3 max-w-xl text-muted">Кто заходил, сколько раз и как глубоко прошёл. Даты рождения и заметок здесь нет.</p>
         </header>

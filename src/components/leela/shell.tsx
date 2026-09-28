@@ -33,6 +33,21 @@ export function Shell({ children }: { children: ReactNode }) {
   );
 }
 
+export function LilaLogo({ large = false }: { large?: boolean }) {
+  return (
+    <div className={large ? "lila-logo lila-logo-lg" : "lila-logo"}>
+      <span className="lila-aura" aria-hidden />
+      <svg className="lila-figure" viewBox="0 0 80 150" aria-hidden>
+        <path
+          fill="currentColor"
+          d="M40 10c8 0 13 6 13 13s-5 12-13 12-13-5-13-12 5-13 13-13zm-18 30c2 8 8 14 18 15 10-1 16-7 18-15 7 2 14 8 16 16-6 5-14 6-20 4 2 8 3 16 2 26 8 2 16 8 18 16-2 10-14 16-34 16s-32-6-34-16c2-8 10-14 18-16-1-10 0-18 2-26-6 2-14 1-20-4 2-8 9-14 16-16z"
+        />
+      </svg>
+      <p className="lila-word">LILA</p>
+    </div>
+  );
+}
+
 export function Mark({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 32 32" className={className} aria-hidden>

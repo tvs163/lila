@@ -1,5 +1,5 @@
 import { useGame, type BirthProfile } from "@/lib/game-store";
-import { listenPrepare } from "@/lib/leela/listen";
+import { listenPrepare, playerOf } from "@/lib/leela/listen";
 
 let inflight = "";
 
@@ -22,7 +22,7 @@ export function ensureBrief() {
   } else {
     state.setBriefStatus("reading");
   }
-  void listenPrepare(birth, state.guide, intention).then((result) => {
+  void listenPrepare(birth, state.guide, intention, playerOf(state.gender, state.guide)).then((result) => {
     if (inflight === key) inflight = "";
     const current = useGame.getState();
     if (!current.birth || briefKeyOf(current.birth, current.intention) !== key) return;

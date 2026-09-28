@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from "react";
 import tzLookup from "tz-lookup";
 import { Button, fieldClass } from "@/components/ui/button";
+import { LilaLogo } from "@/components/leela/shell";
 import { matchCities, type City } from "@/lib/places";
 import { searchPlaces, type RemotePlace } from "@/lib/places-search";
 import { useGame, type BirthProfile } from "@/lib/game-store";
@@ -83,7 +84,8 @@ export function Birth() {
   return (
     <form onSubmit={submit} className="mx-auto flex min-h-dvh w-full max-w-lg flex-col justify-center gap-6 px-5 py-12">
       <header>
-        <p className="text-sm tracking-widest text-gold uppercase">{nickname}</p>
+        <LilaLogo />
+        <p className="mt-4 text-sm tracking-widest text-gold uppercase">{nickname}</p>
         <h1 className="mt-2 font-display text-5xl">Когда ты родился</h1>
         <p className="mt-4 text-muted">
           Дата, время и город останутся только на этом устройстве. Карту я не раскладываю. Она нужна, чтобы говорить точнее — и только.

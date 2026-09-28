@@ -5,7 +5,7 @@ import { BoardMap } from "@/components/leela/board-map";
 import { BreathRitual } from "@/components/leela/breath";
 import { ConductorTurn } from "@/components/leela/conductor-turn";
 import { DiceThrow } from "@/components/leela/dice";
-import { Mark } from "@/components/leela/shell";
+import { LilaLogo } from "@/components/leela/shell";
 import { WisdomFloat } from "@/components/leela/wisdom";
 import { Button, fieldClass } from "@/components/ui/button";
 import { squareById } from "@/lib/leela/board";
@@ -17,6 +17,7 @@ import { useGame } from "@/lib/game-store";
 export function Play() {
   const nickname = useGame((state) => state.nickname);
   const guide = useGame((state) => state.guide);
+  const gender = useGame((state) => state.gender);
   const birth = useGame((state) => state.birth);
   const intention = useGame((state) => state.intention);
   const position = useGame((state) => state.position);
@@ -119,11 +120,11 @@ export function Play() {
     setSpin(null);
     throwing.current = false;
     setListening(at);
-    void listenArrive({ guide, intention, journal, birth, outcome: current, brief: useGame.getState().innerBrief }).then((result) => {
+    void listenArrive({ guide, gender, intention, journal, birth, outcome: current, brief: useGame.getState().innerBrief }).then((result) => {
       if (result.ok) saveVoice(at, "arrive", { speech: result.speech, question: result.question });
       else setListening(null);
     });
-  }, [birth, commitThrow, guide, intention, journal, saveVoice, setListening]);
+  }, [birth, commitThrow, gender, guide, intention, journal, saveVoice, setListening]);
 
   function saveJournal(event: FormEvent) {
     event.preventDefault();
@@ -156,7 +157,7 @@ export function Play() {
       <WisdomFloat open={briefPending || listeningAt != null} />
       <header className="flex items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-3">
-          <Mark className="size-8 shrink-0 text-gold" />
+          <LilaLogo />
           <div className="min-w-0">
             <p className="text-sm tracking-widest text-gold uppercase">{guideName}</p>
             <h1 className="truncate font-display text-3xl">{nickname}</h1>
@@ -268,13 +269,16 @@ export function Play() {
                         </Button>
                       </div>
                     ) : null}
+                    <Button className="mt-6 w-full" variant="glow" onClick={() => setPane("field")}>
+                      Следующий ход
+                    </Button>
                   </>
                 ) : innerBrief ? (
                   <>
                     <p className="text-sm tracking-widest text-gold uppercase">{guideName}</p>
                     <p className="mt-3">{innerBrief}</p>
-                    <Button className="mt-5" variant="quiet" onClick={() => setPane("field")}>
-                      К полю
+                    <Button className="mt-5 w-full" variant="glow" onClick={() => setPane("field")}>
+                      Следующий ход
                     </Button>
                   </>
                 ) : (
@@ -341,7 +345,7 @@ function About() {
         <Dialog.Content className="fixed inset-0 z-[80] flex items-end justify-center p-4 sm:items-center">
           <div className="max-h-[85dvh] w-full max-w-lg overflow-y-auto rounded-3xl border border-line bg-surface p-6">
             <Dialog.Title className="font-display text-3xl">Как устроена игра</Dialog.Title>
-            <Dialog.Description className="mt-3 text-fg">Лила — это игровой формат самопознания.</Dialog.Description>
+            <Dialog.Description className="mt-3 text-fg">LILA — это игровой формат самопознания.</Dialog.Description>
             <div className="mt-4 flex flex-col gap-3 text-muted">
               <p>У каждого из нас есть вопросы, которые отделяют от гармонии и умиротворенности. Ответы на них скрыты под многими слоями эго и неосознанных установок.</p>
               <p>Вопросы проводника — это карта, куда нужно идти, а твои ответы — сама тропинка к состоянию умиротворенности.</p>

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Gate, Mark } from "@/components/leela/shell";
+import { Gate, LilaLogo } from "@/components/leela/shell";
 import { primeOm } from "@/lib/leela/om";
 import { useGame } from "@/lib/game-store";
 
@@ -14,9 +14,9 @@ export function Intro() {
       <header className="relative">
         <Gate className="pointer-events-none absolute -top-6 left-1/2 h-40 w-full -translate-x-1/2 text-gold opacity-40" />
         <div className="relative pt-8 text-center">
-          <Mark className="mx-auto size-10 text-gold" />
+          <LilaLogo large />
           <p className="mt-4 text-sm tracking-widest text-gold uppercase">{slide === 0 ? "Перед началом" : "Как это устроено"}</p>
-          <h1 className="mt-2 font-display text-6xl">{slide === 0 ? "Лила" : "Ничего не нужно"}</h1>
+          {slide === 0 ? null : <h1 className="mt-2 font-display text-5xl">Ничего не нужно</h1>}
         </div>
       </header>
 

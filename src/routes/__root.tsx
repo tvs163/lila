@@ -3,7 +3,7 @@ import { AuthProvider } from "@/lib/auth/provider";
 import { PreviewHostBridge } from "@/components/preview-host-bridge";
 import appCss from "../styles.css?url";
 
-const APP_NAME = "Лила";
+const APP_NAME = "LILA";
 
 export const Route = createRootRoute({
   head: () => ({
@@ -14,7 +14,7 @@ export const Route = createRootRoute({
       {
         name: "description",
         content:
-          "Лила — игра самопознания. Проводник ждёт твой ответ и не бросает кость сам.",
+          "LILA — игра самопознания. Проводник говорит с тобой по твоему вопросу.",
       },
       { name: "theme-color", content: "#12101c" },
     ],
