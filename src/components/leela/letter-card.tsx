@@ -23,16 +23,29 @@ export function LetterCard() {
     if (!birth || intention.trim().length < 4 || busy) return;
     setBusy(true);
     setError("");
-    const cells = log.map((entry) => entry.to).filter((id) => id > 0).slice(-24);
-    const notes = journal.slice(0, 4).map((entry) => entry.text);
+    const cells = log
+      .map((entry) => entry.to)
+      .filter((id) => Number.isInteger(id) && id > 0 && id <= 72)
+      .slice(-12);
+    const notes = journal
+      .slice(0, 3)
+      .map((entry) => entry.text.trim().slice(0, 180))
+      .filter((text) => text.length > 1);
     try {
       const result = await composeLetter({
         data: {
           guide: guide === "soma" ? "soma" : "agni",
           player: playerOf(gender, guide),
-          nickname: nickname.slice(0, 40),
-          intention,
-          birth,
+          nickname: nickname.trim().slice(0, 40),
+          intention: intention.trim().slice(0, 280),
+          birth: {
+            date: (birth.date || "").slice(0, 20),
+            time: (birth.time || "").slice(0, 12),
+            placeLabel: (birth.placeLabel || "").slice(0, 80),
+            lat: Number(birth.lat) || 0,
+            lon: Number(birth.lon) || 0,
+            timeZone: (birth.timeZone || "UTC").slice(0, 64),
+          },
           cells,
           notes,
         },
@@ -42,6 +55,11 @@ export function LetterCard() {
         return;
       }
       saveLetter(result.letter);
+      try {
+        await downloadLetter(result.letter, nickname, intention, early);
+      } catch {
+        setError("Письмо собрано. Если файл не открылся, нажми «Скачать PDF».");
+      }
     } catch {
       setError("Письмо не собралось. Можно попросить ещё раз.");
     } finally {
