@@ -7,7 +7,9 @@ export type PathLetter = {
   fold: string;
   strength: string;
   shadow: string;
+  emotions: string;
   tools: string[];
+  heart: string;
 };
 
 export type LetterResult = { ok: true; letter: PathLetter } | { ok: false; error: string };
@@ -29,18 +31,18 @@ const Input = z.object({
   notes: z.array(z.string().trim().max(240)).max(4),
 });
 
-const SYSTEM = `Ты проводник игры самопознания «Лила». Письмо в конце пути, по-русски. Если проводник Агни — мужской род. Если Сома — женский. Тон спокойный и прямой, без театра и без сюсюканья.
+const SYSTEM = `Ты проводник игры самопознания «Лила». Письмо человеку после третьего хода, по-русски. Если проводник Агни — мужской род. Если Сома — женский. Тон спокойный, тёплый и прямой, без театра и без сюсюканья.
 
-Внутри у тебя есть посчитанный рисунок человека: ведическая карта и психоматрица. Опирайся на него и на пройденные состояния, но человеку этого не показывай. Запрещены слова и темы: астрология, гороскоп, планета, знак зодиака, накшатра, лагна, дом, психоматрица, цифра, дата рождения, карта, матрица. Не называй пол. Не предсказывай будущее.
+Внутри у тебя есть посчитанный рисунок: ведическая карта и цифровая психология (психоматрица). Персонализируй ими склад, силу, слабину, чувства и практики под его запрос. Человеку источник не показывай. Запрещены слова: астрология, гороскоп, планета, знак зодиака, накшатра, лагна, дом, психоматрица, цифра, дата рождения, карта, матрица, натальная. Не называй пол. Не предсказывай будущее. Не перечисляй клетки и не объясняй правила игры.
 
-Письмо — про его запрос, не про игру. Не перечисляй клетки и не объясняй правила.
+fold: общими чертами, какой он именно в этом запросе. 4–6 коротких предложений. Узнаваемо, без диагноза и без лести.
+strength: сильные психологические стороны, которые уже служат этому запросу. 2–3 предложения.
+shadow: слабые психологические стороны, где он себе мешает в этом запросе. 2–3 предложения, прямо и без ярлыка.
+emotions: как ему работать со своими эмоциями в этом вопросе. 3–4 предложения, конкретно: что замечать, что не глушить, куда девать чувство.
+tools: ровно 4 практики под этот запрос. Каждая — одно предложение, что делать в ближайшие дни. Тело, запись, разговор или пауза. Без ритуалов.
+heart: слова, которые подбодрят и напомнят, что нужное у него уже есть, его надо найти внутри, а не добыть снаружи. 3–4 предложения. Без лозунга и без «вселенная».
 
-fold: какой он в этом вопросе. Узнаваемый склад, 4–6 коротких предложений. Не диагноз и не комплимент.
-strength: на что ему реально опираться. 2–3 предложения, конкретно.
-shadow: где он себе мешает в этом запросе. 2–3 предложения, прямо, без ярлыка.
-tools: ровно 4 инструмента под этот запрос. Каждый — одно предложение: что делать в ближайшие дни. Тело, запись, разговор или пауза. Без ритуалов и без общих слов «полюби себя».
-
-Верни только JSON: {"fold":"...","strength":"...","shadow":"...","tools":["...","...","...","..."]}`;
+Верни только JSON: {"fold":"...","strength":"...","shadow":"...","emotions":"...","tools":["...","...","...","..."],"heart":"..."}`;
 
 const forbidden = /астролог|гороскоп|планет|зодиак|накшатр|лагн|психоматриц|дата рождения|натальн/i;
 
@@ -54,18 +56,23 @@ function parseLetter(raw: string): PathLetter | null {
       fold?: unknown;
       strength?: unknown;
       shadow?: unknown;
+      emotions?: unknown;
       tools?: unknown;
+      heart?: unknown;
     };
-    const fold = typeof json.fold === "string" ? json.fold.trim() : "";
-    const strength = typeof json.strength === "string" ? json.strength.trim() : "";
-    const shadow = typeof json.shadow === "string" ? json.shadow.trim() : "";
+    const text = (value: unknown, min: number, max: number) => (typeof value === "string" && value.trim().length >= min ? value.trim().slice(0, max) : "");
+    const fold = text(json.fold, 40, 900);
+    const strength = text(json.strength, 20, 500);
+    const shadow = text(json.shadow, 20, 500);
+    const emotions = text(json.emotions, 20, 700);
+    const heart = text(json.heart, 20, 700);
     const tools = Array.isArray(json.tools)
       ? json.tools.filter((item): item is string => typeof item === "string" && item.trim().length > 8).map((item) => item.trim().slice(0, 220)).slice(0, 4)
       : [];
-    if (fold.length < 40 || strength.length < 20 || shadow.length < 20 || tools.length < 3) return null;
-    const whole = [fold, strength, shadow, ...tools].join(" ");
+    if (!fold || !strength || !shadow || !emotions || !heart || tools.length < 3) return null;
+    const whole = [fold, strength, shadow, emotions, heart, ...tools].join(" ");
     if (forbidden.test(whole)) return null;
-    return { fold: fold.slice(0, 900), strength: strength.slice(0, 500), shadow: shadow.slice(0, 500), tools };
+    return { fold, strength, shadow, emotions, tools, heart };
   } catch {
     return null;
   }
@@ -112,7 +119,7 @@ export const composeLetter = createServerFn({ method: "POST" })
           body: JSON.stringify({
             model: "grok-4.5",
             temperature: 0.5,
-            max_tokens: 900,
+            max_tokens: 1200,
             messages: [
               { role: "system", content: SYSTEM },
               { role: "user", content: user },

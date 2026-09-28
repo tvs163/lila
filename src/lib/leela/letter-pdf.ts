@@ -61,18 +61,22 @@ export async function downloadLetter(letter: PathLetter, nickname: string, inten
   };
 
   write("LILA", 22, gold, 8);
-  write(nickname ? `Письмо для ${nickname}` : "Письмо в конце пути", 16, ink, 6);
+  write(nickname ? `Письмо для ${nickname}` : "Письмо о тебе", 16, ink, 6);
   write(`Вопрос, с которым ты вошёл: ${intention}`, 11, mute, 10);
   page.drawLine({ start: { x: margin, y }, end: { x: pageWidth - margin, y }, thickness: 0.6, color: gold });
   y -= 22;
   write("Какой ты в этом вопросе", 13, gold, 8);
   write(letter.fold, 11, ink, 14);
-  write("На что опираться", 13, gold, 8);
+  write("Сильная сторона", 13, gold, 8);
   write(letter.strength, 11, ink, 14);
-  write("Где себе мешаешь", 13, gold, 8);
+  write("Слабая сторона", 13, gold, 8);
   write(letter.shadow, 11, ink, 14);
-  write("Чем пользоваться", 13, gold, 8);
+  write("Как работать с эмоциями", 13, gold, 8);
+  write(letter.emotions, 11, ink, 14);
+  write("Практики под твой вопрос", 13, gold, 8);
   letter.tools.forEach((tool, index) => write(`${index + 1}. ${tool}`, 11, ink, 8));
+  write("У тебя уже есть", 13, gold, 8);
+  write(letter.heart, 11, ink, 8);
 
   const file = await pdf.save();
   const copy = new Uint8Array(file.byteLength);

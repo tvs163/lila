@@ -14,6 +14,7 @@ export function LetterCard() {
   const log = useGame((state) => state.log);
   const journal = useGame((state) => state.journal);
   const letter = useGame((state) => state.letter);
+  const ready = Boolean(letter?.fold && letter.emotions && letter.heart && letter.tools?.length);
   const saveLetter = useGame((state) => state.saveLetter);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -57,13 +58,15 @@ export function LetterCard() {
     }
   }
 
-  if (!letter) {
+  if (!ready || !letter) {
     return (
       <div className="mt-6 border-t border-line pt-5">
-        <h3 className="font-display text-2xl">Письмо в конце пути</h3>
-        <p className="mt-2 text-sm text-muted">Склад, на что опираться, где себе мешаешь, и четыре инструмента под твой вопрос. Файл можно забрать себе.</p>
+        <h3 className="font-display text-2xl">Письмо о тебе</h3>
+        <p className="mt-2 text-sm text-muted">
+          Под твой вопрос: какой ты, где сила и где слабина, как быть с чувствами, какие практики помогут и чем себя напомнить. Файл можно скачать.
+        </p>
         <Button className="mt-4 w-full" variant="glow" disabled={busy} onClick={() => void gather()}>
-          {busy ? "Проводник собирает письмо…" : "Собрать письмо"}
+          {busy ? "Проводник собирает письмо…" : "Собрать и скачать"}
         </Button>
         {error ? <p className="mt-2 text-sm text-gold">{error}</p> : null}
       </div>
@@ -78,20 +81,28 @@ export function LetterCard() {
         <p className="mt-2">{letter.fold}</p>
       </section>
       <section>
-        <h4 className="text-sm tracking-widest text-gold uppercase">На что опираться</h4>
+        <h4 className="text-sm tracking-widest text-gold uppercase">Сильная сторона</h4>
         <p className="mt-2">{letter.strength}</p>
       </section>
       <section>
-        <h4 className="text-sm tracking-widest text-gold uppercase">Где себе мешаешь</h4>
+        <h4 className="text-sm tracking-widest text-gold uppercase">Слабая сторона</h4>
         <p className="mt-2">{letter.shadow}</p>
       </section>
       <section>
-        <h4 className="text-sm tracking-widest text-gold uppercase">Чем пользоваться</h4>
+        <h4 className="text-sm tracking-widest text-gold uppercase">Как работать с эмоциями</h4>
+        <p className="mt-2">{letter.emotions}</p>
+      </section>
+      <section>
+        <h4 className="text-sm tracking-widest text-gold uppercase">Практики</h4>
         <ol className="mt-2 flex list-decimal flex-col gap-2 pl-5">
           {letter.tools.map((tool) => (
             <li key={tool}>{tool}</li>
           ))}
         </ol>
+      </section>
+      <section>
+        <h4 className="text-sm tracking-widest text-gold uppercase">У тебя уже есть</h4>
+        <p className="mt-2">{letter.heart}</p>
       </section>
       <Button className="w-full" variant="glow" onClick={() => void save(letter)}>
         Скачать PDF

@@ -27,8 +27,9 @@ export function Play() {
   const lastTurnAt = useGame((state) => state.lastTurnAt);
   const extraLeft = useGame((state) => state.extraLeft);
   const lastBreathAt = useGame((state) => state.lastBreathAt);
-  const won = useGame((state) => state.won);
   const log = useGame((state) => state.log);
+  const won = useGame((state) => state.won);
+  const letterOpen = won || log.filter((entry) => entry.kind !== "unborn").length >= 3;
   const journal = useGame((state) => state.journal);
   const innerBrief = useGame((state) => state.innerBrief);
   const briefKey = useGame((state) => state.briefKey);
@@ -200,6 +201,11 @@ export function Play() {
             {pane === "field" ? (
               <div className="flex flex-col gap-4">
                 <BoardMap position={position} readingId={readingId} visited={visited} move={shown ?? null} onPick={openCell} />
+                {letterOpen && !won ? (
+                  <button type="button" className="text-left text-sm text-gold" onClick={() => setPane("word")}>
+                    Письмо о тебе уже можно забрать — оно во вкладке «Слово».
+                  </button>
+                ) : null}
                 {won ? (
                   <div className="rounded-3xl border border-gold-dim bg-bg-raise p-5">
                     <h3 className="font-display text-3xl">Ты на 68-й</h3>
@@ -271,9 +277,10 @@ export function Play() {
                         </Button>
                       </div>
                     ) : null}
-                    {won ? (
+                    {letterOpen ? (
                       <LetterCard />
-                    ) : (
+                    ) : null}
+                    {won ? null : (
                       <Button className="mt-6 w-full" variant="glow" onClick={() => setPane("field")}>
                         Следующий ход
                       </Button>
@@ -361,7 +368,7 @@ function About() {
               <p>Ты кидаешь кость. Открывается состояние, в котором этот вопрос сейчас живёт.</p>
               <p>Проводник задаёт один вопрос. Твоя часть — быть честным с собой. Отвечать вслух не нужно.</p>
               <p>Если захочешь, оставишь заметку только себе. Чем прямее смотришь, тем понятнее, что с этим вопросом делать.</p>
-              <p>Обычно это около часа. Можно уйти и вернуться — поле помнит, где ты остановился. В конце будет письмо: твой склад и четыре инструмента под твой вопрос.</p>
+              <p>Обычно это около часа. Можно уйти и вернуться — поле помнит, где ты остановился. После третьего хода откроется письмо о тебе: сила, слабина и чем опираться в своём вопросе.</p>
             </div>
             <Dialog.Close asChild>
               <Button className="mt-6 w-full">Закрыть</Button>
