@@ -212,64 +212,38 @@
 .lila-logo {
   position: relative;
   display: grid;
-  justify-items: center;
-  width: 7.5rem;
-}
-
-.lila-logo-lg {
-  width: 16rem;
-}
-
-.lila-aura,
-.lila-figure {
-  pointer-events: none;
-  grid-area: 1 / 1;
+  place-items: center;
+  margin: 0;
+  line-height: 0.8;
 }
 
 .lila-aura {
-  width: 140%;
-  height: 8.5rem;
-  margin-top: -1.5rem;
-  background:
-    radial-gradient(ellipse at 50% 42%, rgb(255 244 228 / 28%) 0%, transparent 58%),
-    radial-gradient(ellipse at 50% 70%, rgb(141 120 214 / 22%) 0%, transparent 62%);
-  filter: blur(8px);
+  position: absolute;
+  inset: -40% -18%;
+  background: radial-gradient(ellipse at 50% 55%, rgb(212 176 114 / 34%), rgb(141 120 214 / 16%) 42%, transparent 70%);
+  filter: blur(10px);
   animation: lila-breathe 8s ease-in-out infinite;
-}
-
-.lila-logo-lg .lila-aura {
-  height: 13rem;
-  margin-top: -2.2rem;
-}
-
-.lila-figure {
-  position: relative;
-  grid-area: 1 / 1;
-  width: 6.5rem;
-  height: auto;
-  margin-top: -0.4rem;
-  object-fit: contain;
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 72%, transparent 100%);
-  mask-image: linear-gradient(to bottom, #000 0%, #000 72%, transparent 100%);
-  filter: drop-shadow(0 0 14px rgb(167 140 255 / 45%));
-  animation: lila-drift 9s ease-in-out infinite;
-}
-
-.lila-logo-lg .lila-figure {
-  width: 16rem;
 }
 
 .lila-word {
   position: relative;
-  width: 12rem;
-  height: auto;
-  margin: 0.15rem 0 0;
-  filter: drop-shadow(0 0 14px rgb(255 244 228 / 40%));
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 500;
+  font-size: 1.55rem;
+  letter-spacing: 0.16em;
+  text-indent: 0.16em;
+  background: linear-gradient(180deg, #fffdf8 0%, #f4e4c0 62%, #ecd4f2 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 6px rgb(255 246 228 / 90%)) drop-shadow(0 0 16px rgb(176 146 230 / 45%));
 }
 
 .lila-logo-lg .lila-word {
-  width: 14rem;
-  margin-top: 0.35rem;
+  font-size: clamp(4rem, 20vw, 5.5rem);
+  letter-spacing: 0.14em;
+  text-indent: 0.14em;
 }
 
 @keyframes lila-breathe {
@@ -299,7 +273,8 @@
 }
 
 .wisdom-veil {
-  background: radial-gradient(ellipse at 50% 42%, rgb(16 14 28 / 20%), rgb(16 14 28 / 72%) 70%);
+  background: rgb(8 6 16 / 86%);
+  backdrop-filter: blur(10px);
 }
 
 .wisdom-note {
@@ -372,7 +347,6 @@
   .die-pop,
   .dice-orbit,
   .lila-aura,
-  .lila-figure,
   .wisdom-card,
   .wisdom-wisp {
     animation: none;

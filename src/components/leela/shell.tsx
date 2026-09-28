@@ -35,11 +35,10 @@ export function Shell({ children }: { children: ReactNode }) {
 
 export function LilaLogo({ large = false }: { large?: boolean }) {
   return (
-    <div className={large ? "lila-logo lila-logo-lg" : "lila-logo"}>
+    <p className={large ? "lila-logo lila-logo-lg" : "lila-logo"}>
       <span className="lila-aura" aria-hidden />
-      <img className="lila-figure" src="/lila-figure.png" alt="" />
-      {large ? <img className="lila-word" src="/lila-word.png" alt="LILA" /> : null}
-    </div>
+      <span className="lila-word">LILA</span>
+    </p>
   );
 }
 
