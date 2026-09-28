@@ -5,6 +5,7 @@ import { BreathRitual } from "@/components/leela/breath";
 import { Intention } from "@/components/leela/intention";
 import { Intro } from "@/components/leela/intro";
 import { Play } from "@/components/leela/play";
+import { QuietPulse } from "@/components/leela/quiet-pulse";
 import { Shell } from "@/components/leela/shell";
 import { ensureBrief } from "@/lib/leela/prepare";
 import { useGame } from "@/lib/game-store";
@@ -32,6 +33,7 @@ export function LilaApp() {
 
   return (
     <Shell>
+      <QuietPulse />
       {phase === "intro" || !seenIntro ? <Intro /> : null}
       {phase === "arrival" && seenIntro ? <Arrival /> : null}
       {phase === "birth" && seenIntro ? <Birth /> : null}

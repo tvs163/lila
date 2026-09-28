@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { resetQuiet } from "@/lib/leela/quiet-id";
 import { applyRoll, canRollNow, rollDie, rollsForTurn, SIX_BONUS, type RollOutcome } from "@/lib/leela/rules";
 import { mirrorReply } from "@/lib/leela/conductor";
 
@@ -227,7 +228,10 @@ export const useGame = create<Game>()(
       },
       newPath: () => set({ ...emptyPath, phase: "breath", journal: get().journal, voices: [] }),
       editBirth: () => set({ phase: "birth" }),
-      forget: () => set({ ...initial }),
+      forget: () => {
+        resetQuiet();
+        set({ ...initial });
+      },
     }),
     {
       name: "lila-journey",
