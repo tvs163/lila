@@ -3,6 +3,7 @@ import { persist } from "zustand/middleware";
 import { resetQuiet } from "@/lib/leela/quiet-id";
 import { applyRoll, canRollNow, rollDie, rollsForTurn, SIX_BONUS, type RollOutcome } from "@/lib/leela/rules";
 import { mirrorReply } from "@/lib/leela/conductor";
+import type { PathLetter } from "@/lib/leela/letter";
 
 export type GuideId = "agni" | "soma";
 export type Gender = "woman" | "man" | "open";
@@ -57,6 +58,7 @@ type Game = PathState & {
   innerBrief: string;
   briefKey: string;
   briefStatus: "idle" | "reading" | "ready" | "quiet";
+  letter: PathLetter | null;
   begin: () => void;
   setSound: (sound: boolean) => void;
   setArrival: (nickname: string, gender: Gender, guide: GuideId) => void;
@@ -75,6 +77,7 @@ type Game = PathState & {
   setListening: (at: number | null) => void;
   setBriefStatus: (status: "idle" | "reading" | "ready" | "quiet") => void;
   saveBrief: (key: string, speech: string) => void;
+  saveLetter: (letter: PathLetter) => void;
   permitTurn: () => void;
   newPath: () => void;
   editBirth: () => void;
@@ -109,6 +112,7 @@ const initial = {
   innerBrief: "",
   briefKey: "",
   briefStatus: "idle" as const,
+  letter: null as PathLetter | null,
   ...emptyPath,
 };
 
@@ -204,6 +208,7 @@ export const useGame = create<Game>()(
       setBriefStatus: (briefStatus) => set({ briefStatus }),
       saveBrief: (key, speech) =>
         set({ briefKey: key, innerBrief: speech, briefStatus: speech ? "ready" : "quiet" }),
+      saveLetter: (letter) => set({ letter }),
       replyToTurn: (text) => {
         const state = get();
         const last = state.log[state.log.length - 1];
@@ -226,7 +231,7 @@ export const useGame = create<Game>()(
         if (!last || last.kind !== "unborn") return;
         set({ answeredAt: last.at, probeFor: null });
       },
-      newPath: () => set({ ...emptyPath, phase: "breath", journal: get().journal, voices: [] }),
+      newPath: () => set({ ...emptyPath, phase: "breath", journal: get().journal, voices: [], letter: null }),
       editBirth: () => set({ phase: "birth" }),
       forget: () => {
         resetQuiet();
@@ -236,7 +241,7 @@ export const useGame = create<Game>()(
     {
       name: "lila-journey",
       skipHydration: true,
-      version: 7,
+      version: 8,
       migrate: (persisted, version) => {
         if (!persisted || typeof persisted !== "object") return persisted;
         const state = persisted as {
@@ -253,6 +258,7 @@ export const useGame = create<Game>()(
           voices?: TurnVoice[];
           innerBrief?: string;
           briefKey?: string;
+          letter?: PathLetter | null;
         };
         if (version < 2) {
           if (typeof state.extraLeft !== "number") state.extraLeft = state.extraRoll ? SIX_BONUS : 0;
@@ -274,6 +280,7 @@ export const useGame = create<Game>()(
           if (typeof state.innerBrief !== "string") state.innerBrief = "";
           if (typeof state.briefKey !== "string") state.briefKey = "";
         }
+        if (version < 8 && state.letter == null) state.letter = null;
         return state;
       },
       partialize: (state) => ({
@@ -289,6 +296,7 @@ export const useGame = create<Game>()(
         voices: state.voices,
         innerBrief: state.innerBrief,
         briefKey: state.briefKey,
+        letter: state.letter,
         intention: state.intention,
         position: state.position,
         visited: state.visited,

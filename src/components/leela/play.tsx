@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState, type FormEvent } from "react"
 import { BoardMap } from "@/components/leela/board-map";
 import { BreathRitual } from "@/components/leela/breath";
 import { ConductorTurn } from "@/components/leela/conductor-turn";
+import { LetterCard } from "@/components/leela/letter-card";
 import { DiceThrow } from "@/components/leela/dice";
 import { LilaLogo } from "@/components/leela/shell";
 import { WisdomFloat } from "@/components/leela/wisdom";
@@ -202,8 +203,11 @@ export function Play() {
                 {won ? (
                   <div className="rounded-3xl border border-gold-dim bg-bg-raise p-5">
                     <h3 className="font-display text-3xl">Ты на 68-й</h3>
-                    <p className="mt-2 text-muted">Можно начать новый вопрос. Заметки останутся.</p>
-                    <Button className="mt-4" onClick={newPath}>
+                    <p className="mt-2 text-muted">Путь по этому вопросу пройден. Письмо — во вкладке «Слово».</p>
+                    <Button className="mt-4 w-full" variant="glow" onClick={() => setPane("word")}>
+                      Открыть письмо
+                    </Button>
+                    <Button className="mt-2" variant="quiet" onClick={newPath}>
                       Новый путь
                     </Button>
                   </div>
@@ -267,9 +271,13 @@ export function Play() {
                         </Button>
                       </div>
                     ) : null}
-                    <Button className="mt-6 w-full" variant="glow" onClick={() => setPane("field")}>
-                      Следующий ход
-                    </Button>
+                    {won ? (
+                      <LetterCard />
+                    ) : (
+                      <Button className="mt-6 w-full" variant="glow" onClick={() => setPane("field")}>
+                        Следующий ход
+                      </Button>
+                    )}
                   </>
                 ) : innerBrief ? (
                   <>
@@ -353,6 +361,7 @@ function About() {
               <p>Ты кидаешь кость. Открывается состояние, в котором этот вопрос сейчас живёт.</p>
               <p>Проводник задаёт один вопрос. Твоя часть — быть честным с собой. Отвечать вслух не нужно.</p>
               <p>Если захочешь, оставишь заметку только себе. Чем прямее смотришь, тем понятнее, что с этим вопросом делать.</p>
+              <p>Обычно это около часа. Можно уйти и вернуться — поле помнит, где ты остановился. В конце будет письмо: твой склад и четыре инструмента под твой вопрос.</p>
             </div>
             <Dialog.Close asChild>
               <Button className="mt-6 w-full">Закрыть</Button>
