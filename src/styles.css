@@ -217,7 +217,7 @@
 }
 
 .lila-logo-lg {
-  width: 11rem;
+  width: 16rem;
 }
 
 .lila-aura,
@@ -243,22 +243,20 @@
 }
 
 .lila-figure {
+  position: relative;
   grid-area: 1 / 1;
-  width: 4.6rem;
-  height: 8rem;
-  margin-top: -0.6rem;
-  color: #f7f1e6;
-  -webkit-mask-image: linear-gradient(to bottom, #000 8%, rgb(0 0 0 / 75%) 48%, transparent 92%);
-  mask-image: linear-gradient(to bottom, #000 8%, rgb(0 0 0 / 75%) 48%, transparent 92%);
-  filter:
-    drop-shadow(0 0 10px rgb(255 244 228 / 80%))
-    drop-shadow(0 0 22px rgb(212 176 114 / 45%));
+  width: 6.5rem;
+  height: auto;
+  margin-top: -0.4rem;
+  object-fit: contain;
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 72%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 72%, transparent 100%);
+  filter: drop-shadow(0 0 14px rgb(167 140 255 / 45%));
   animation: lila-drift 9s ease-in-out infinite;
 }
 
 .lila-logo-lg .lila-figure {
-  width: 7rem;
-  height: 12rem;
+  width: 16rem;
 }
 
 .lila-word {
