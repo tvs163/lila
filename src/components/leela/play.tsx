@@ -224,7 +224,7 @@ export function Play() {
                 ) : ready ? (
                   <div className="flex flex-col gap-2">
                     <Button className="w-full tracking-wide" variant="glow" onClick={() => (skipBreath ? launch() : setBreathOpen(true))}>
-                      {extraLeft > 0 ? "Ещё бросок" : skipBreath && position === 0 ? "Просить рождение" : position === 0 ? "Дышать и просить рождение" : "Ход"}
+                      {extraLeft > 0 ? "Ещё бросок" : position === 0 ? "Начать игру" : skipBreath ? "Ход" : "Дыхательная практика"}
                     </Button>
                     {extraLeft > 0 ? (
                       <p className="text-center text-sm text-muted">
