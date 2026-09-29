@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
-import { Gate, LilaLogo } from "@/components/leela/shell";
+import { Gate } from "@/components/leela/shell";
+import { LilaMark } from "@/components/leela/lila-mark";
 import { primeOm } from "@/lib/leela/om";
 import { useGame } from "@/lib/game-store";
 
@@ -75,7 +76,7 @@ export function Intro() {
         <header className="relative">
           <Gate className="pointer-events-none absolute -top-6 left-1/2 h-40 w-full -translate-x-1/2 text-gold opacity-40" />
           <div className="relative pt-1 text-center">
-            <LilaLogo large />
+            <LilaMark play={slide} />
             <p className="mt-4 text-sm tracking-widest text-gold uppercase">
               {slide === 0 ? "Об игре" : "Как играть и что от тебя нужно"}
             </p>
