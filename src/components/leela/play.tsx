@@ -165,7 +165,7 @@ export function Play() {
   return (
     <div className="mx-auto flex min-h-dvh w-full max-w-lg flex-col px-4 py-6">
       {spin ? <DiceThrow outcome={spin} onDone={finishSpin} /> : null}
-      <WisdomFloat open={briefPending || listeningAt != null} />
+      <WisdomFloat open={briefPending || listeningAt != null} guide={guide} />
       <header className="flex items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-3">
           <LilaLogo />

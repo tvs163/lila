@@ -273,8 +273,8 @@
 }
 
 .wisdom-veil {
-  background: rgb(8 6 16 / 86%);
-  backdrop-filter: blur(10px);
+  background: rgb(6 4 14 / 88%);
+  backdrop-filter: blur(12px);
 }
 
 .wisdom-note {
@@ -282,8 +282,14 @@
 }
 
 .wisdom-card {
-  background: linear-gradient(180deg, rgb(36 28 60 / 28%), rgb(16 14 28 / 10%));
-  box-shadow: 0 0 40px rgb(141 120 214 / 18%);
+  border: 1px solid rgb(214 186 122 / 55%);
+  border-radius: 28px;
+  background:
+    radial-gradient(120% 80% at 50% 0%, rgb(92 74 140 / 28%), transparent 55%),
+    rgb(16 12 28 / 94%);
+  box-shadow:
+    0 28px 70px rgb(0 0 0 / 48%),
+    0 0 0 1px rgb(243 236 223 / 8%) inset;
 }
 
 .wisdom-card.smoke-in {
@@ -340,6 +346,120 @@
   }
 }
 
+.guide-think {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  width: 92px;
+  height: 132px;
+  transform: translateX(-50%);
+}
+
+.guide-head,
+.guide-body {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.guide-head {
+  top: 18px;
+  width: 28px;
+  height: 32px;
+  border-radius: 50% 50% 46% 46%;
+  animation: guide-nod 3.6s ease-in-out infinite;
+}
+
+.guide-body {
+  top: 46px;
+  width: 54px;
+  height: 72px;
+  border-radius: 40px 40px 18px 18px;
+  animation: guide-breath 3.6s ease-in-out infinite;
+}
+
+.guide-soma .guide-head {
+  background: radial-gradient(circle at 50% 35%, rgb(255 244 224), rgb(214 176 112) 62%, transparent 74%);
+  box-shadow: 0 0 22px rgb(232 198 140 / 55%);
+}
+
+.guide-soma .guide-body {
+  background: linear-gradient(180deg, rgb(236 206 150 / 80%), rgb(120 86 150 / 28%) 70%, transparent);
+  filter: blur(0.2px);
+}
+
+.guide-agni .guide-head {
+  width: 26px;
+  background: radial-gradient(circle at 50% 35%, rgb(236 228 255), rgb(150 132 210) 60%, transparent 74%);
+  box-shadow: 0 0 22px rgb(168 150 220 / 50%);
+}
+
+.guide-agni .guide-body {
+  width: 46px;
+  background: linear-gradient(180deg, rgb(186 170 230 / 75%), rgb(70 58 120 / 20%) 72%, transparent);
+}
+
+.guide-mote {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: rgb(243 230 196);
+  opacity: 0;
+  animation: guide-mote 2.8s ease-in-out infinite;
+}
+
+.guide-mote-a {
+  top: 8px;
+  left: 18px;
+}
+
+.guide-mote-b {
+  top: 0;
+  left: 42px;
+  animation-delay: 0.35s;
+}
+
+.guide-mote-c {
+  top: 10px;
+  right: 16px;
+  animation-delay: 0.7s;
+}
+
+@keyframes guide-nod {
+  0%,
+  100% {
+    transform: translateX(-50%) translateY(0) rotate(-2deg);
+  }
+  50% {
+    transform: translateX(-50%) translateY(3px) rotate(3deg);
+  }
+}
+
+@keyframes guide-breath {
+  0%,
+  100% {
+    transform: translateX(-50%) scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translateX(-50%) scale(1.04);
+    opacity: 1;
+  }
+}
+
+@keyframes guide-mote {
+  0%,
+  100% {
+    opacity: 0.15;
+    transform: translateY(8px) scale(0.7);
+  }
+  45% {
+    opacity: 0.9;
+    transform: translateY(-6px) scale(1);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .nebula,
   .star,
@@ -348,7 +468,10 @@
   .dice-orbit,
   .lila-aura,
   .wisdom-card,
-  .wisdom-wisp {
+  .wisdom-wisp,
+  .guide-head,
+  .guide-body,
+  .guide-mote {
     animation: none;
   }
 
