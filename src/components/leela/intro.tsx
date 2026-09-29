@@ -1,6 +1,5 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
-import { DustField } from "@/components/leela/dust-field";
 import { Gate, LilaLogo } from "@/components/leela/shell";
 import { primeOm } from "@/lib/leela/om";
 import { useGame } from "@/lib/game-store";
@@ -72,7 +71,6 @@ export function Intro() {
 
   return (
     <main className="relative z-10 mx-auto -mt-14 flex min-h-dvh w-full max-w-lg flex-col overflow-y-auto px-5 pt-2 pb-24">
-      <DustField />
       <div className="flex flex-col gap-6">
         <header className="relative">
           <Gate className="pointer-events-none absolute -top-6 left-1/2 h-40 w-full -translate-x-1/2 text-gold opacity-40" />
