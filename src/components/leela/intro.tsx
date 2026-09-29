@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { DustField } from "@/components/leela/dust-field";
 import { Gate, LilaLogo } from "@/components/leela/shell";
@@ -23,18 +23,53 @@ const STEPS = [
   "Так ход за ходом пока не дойдешь до конца. Пройдя игру, ты откроешь внутри себя точки опоры и гармонии. Это механика самопознания, которой тысячи лет.",
 ];
 
-function Ink({ children, at }: { children: ReactNode; at: number }) {
-  return (
-    <div className="ink" style={{ animationDelay: `${Math.min(at, 8) * 0.14}s` }}>
-      {children}
-    </div>
-  );
+function readMs(text: string) {
+  const count = text.trim().split(/\s+/).filter(Boolean).length;
+  if (count < 6) return 1500;
+  return Math.min(9000, Math.max(2400, (count / 3.6) * 1000));
+}
+
+function Ink({ children }: { children: ReactNode }) {
+  return <div className="ink">{children}</div>;
 }
 
 export function Intro() {
   const begin = useGame((state) => state.begin);
   const guide = useGame((state) => state.guide);
   const [slide, setSlide] = useState(0);
+  const [shown, setShown] = useState(0);
+
+  const blocks =
+    slide === 0
+      ? ABOUT
+      : [
+          "Игра может занять до 60 минут. Её можно закрыть и вернуться. Лучше играть в уединенном состоянии наедине с собой.",
+          "Итак, как будет проходить игра:",
+          ...STEPS.slice(0, 5),
+          "Самая важная часть игры:",
+          ...STEPS.slice(5),
+        ];
+
+  useEffect(() => {
+    setShown(0);
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setShown(blocks.length);
+      return;
+    }
+    let index = 0;
+    let timer = 0;
+    const next = () => {
+      index += 1;
+      setShown(index);
+      if (index > blocks.length) return;
+      timer = window.setTimeout(next, readMs(blocks[index - 1] ?? ""));
+    };
+    timer = window.setTimeout(next, 700);
+    return () => window.clearTimeout(timer);
+  }, [slide]);
+
+  const visible = blocks.slice(0, shown);
+  const ready = shown > blocks.length;
 
   return (
     <main className="relative z-10 mx-auto flex min-h-dvh w-full max-w-lg flex-col overflow-y-auto px-5 py-10 pb-24">
@@ -44,61 +79,58 @@ export function Intro() {
           <Gate className="pointer-events-none absolute -top-6 left-1/2 h-40 w-full -translate-x-1/2 text-gold opacity-40" />
           <div className="relative pt-8 text-center">
             <LilaLogo large />
-            <p className="ink mt-4 text-sm tracking-widest text-gold uppercase" style={{ animationDelay: "0.05s" }}>
+            <p className="mt-4 text-sm tracking-widest text-gold uppercase">
               {slide === 0 ? "Об игре" : "Как играть и что от тебя нужно"}
             </p>
           </div>
         </header>
 
-        <div key={slide} className="ink-sheet relative flex flex-col gap-4">
-          {slide === 0 ? (
-            ABOUT.map((line, index) => (
-              <Ink key={line} at={index + 1}>
-                <p className={index === 0 ? "text-fg" : "text-muted"}>{line}</p>
-              </Ink>
-            ))
-          ) : (
-            <>
-              <Ink at={1}>
-                <p className="text-fg">
-                  Игра может занять до 60 минут. Её можно закрыть и вернуться. Лучше играть в уединенном состоянии наедине с собой.
-                </p>
-              </Ink>
-              <Ink at={2}>
-                <p className="text-gold">Итак, как будет проходить игра:</p>
-              </Ink>
-              <ol className="flex flex-col gap-3">
-                {STEPS.map((step, index) => (
-                  <Ink key={step} at={index + 3}>
-                    {index === 5 ? <p className="mb-3 text-fg">Самая важная часть игры:</p> : null}
-                    <li className="flex gap-3 text-muted">
-                      <span className="mt-0.5 w-5 shrink-0 text-gold tabular-nums">{index + 1}.</span>
-                      <span>{step}</span>
-                    </li>
+        <div key={slide} className="relative flex flex-col gap-4">
+          {slide === 0
+            ? visible.map((line, index) => (
+                <Ink key={line}>
+                  <p className={index === 0 ? "text-fg" : "text-muted"}>{line}</p>
+                </Ink>
+              ))
+            : visible.map((line) => {
+                const step = STEPS.indexOf(line);
+                if (step >= 0) {
+                  return (
+                    <Ink key={line}>
+                      <li className="flex list-none gap-3 text-muted">
+                        <span className="mt-0.5 w-5 shrink-0 text-gold tabular-nums">{step + 1}.</span>
+                        <span>{line}</span>
+                      </li>
+                    </Ink>
+                  );
+                }
+                return (
+                  <Ink key={line}>
+                    <p className={line.startsWith("Итак") || line.startsWith("Самая") ? "text-gold" : "text-fg"}>{line}</p>
                   </Ink>
-                ))}
-              </ol>
-            </>
-          )}
+                );
+              })}
 
-          <Ink at={slide === 0 ? 6 : 12}>
-            {slide === 0 ? (
-              <Button className="mt-2 w-full" variant="glow" onClick={() => setSlide(1)}>
-                Дальше
-              </Button>
-            ) : (
-              <Button
-                className="mt-2 w-full"
-                variant="glow"
-                onClick={() => {
-                  primeOm();
-                  begin();
-                }}
-              >
-                {guide ? "Продолжить путь" : "Войти в игру"}
-              </Button>
-            )}
-          </Ink>
+          {ready ? (
+            <Ink>
+              {slide === 0 ? (
+                <Button className="mt-2 w-full" variant="glow" onClick={() => setSlide(1)}>
+                  Дальше
+                </Button>
+              ) : (
+                <Button
+                  className="mt-2 w-full"
+                  variant="glow"
+                  onClick={() => {
+                    primeOm();
+                    begin();
+                  }}
+                >
+                  {guide ? "Продолжить путь" : "Войти в игру"}
+                </Button>
+              )}
+            </Ink>
+          ) : null}
         </div>
       </div>
     </main>
