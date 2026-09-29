@@ -92,14 +92,14 @@ export function conduct(outcome: RollOutcome, intention: string): Speech {
   const questions = [
     outcome.kind === "win"
       ? "Что в этом вопросе теперь твоё, а что больше не нужно тащить?"
-      : `Где в вопросе «${wish}» прямо сейчас есть «${dest.name.toLowerCase()}»? Назови один момент: с кем это было и что ты тогда сделал.`,
+      : `Как состояние «${dest.name.toLowerCase()}» ощущается внутри твоего вопроса прямо сейчас: в теле, в настроении или в привычке?`,
   ];
 
   return {
     move,
     title: `${dest.id}. ${dest.name} — ${dest.sanskrit}`,
     essence: dest.essence,
-    link: `Речь про твой вопрос «${wish}». Не про судьбу и не про совет, что делать.`,
+    link: `Открыто состояние «${dest.name}». Проводник скажет, как оно ощущается, простыми словами.`,
     questions,
     wait:
       outcome.kind === "win"
