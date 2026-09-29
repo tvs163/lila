@@ -84,12 +84,26 @@ export async function downloadLetter(letter: PathLetter, nickname: string, inten
   const file = await pdf.save();
   const copy = new Uint8Array(file.byteLength);
   copy.set(file);
+  const safe = nickname.replace(/[^\p{L}\p{N}\-]+/gu, "-").replace(/^-|-$/g, "").slice(0, 24);
+  const name = `LILA-${safe || "pismo"}.pdf`;
+  const shared = new File([copy], name, { type: "application/pdf" });
+  const nav = navigator as Navigator & { canShare?: (data: ShareData) => boolean };
+  if (nav.canShare?.({ files: [shared] })) {
+    try {
+      await nav.share({ files: [shared], title: "LILA" });
+      return;
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError") return;
+    }
+  }
   const blob = new Blob([copy.buffer], { type: "application/pdf" });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
-  const safe = nickname.replace(/[^\p{L}\p{N}\-]+/gu, "-").replace(/^-|-$/g, "").slice(0, 24);
   link.href = url;
-  link.download = `LILA-${safe || "pismo"}.pdf`;
+  link.download = name;
+  link.rel = "noopener";
+  document.body.appendChild(link);
   link.click();
+  link.remove();
   window.setTimeout(() => URL.revokeObjectURL(url), 4000);
 }
