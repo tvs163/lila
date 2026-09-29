@@ -290,14 +290,13 @@ export function Play() {
                         </Button>
                       </div>
                     ) : null}
-                    {letterOpen ? <LetterCard /> : null}
-                    {needsEcho && latest ? (
-                      <EchoChoice at={latest.at} />
-                    ) : won ? null : (
-                      <Button className="mt-6 w-full" variant="glow" onClick={() => setPane("field")}>
+                    {needsEcho && latest ? <EchoChoice at={latest.at} /> : null}
+                    {won ? null : (
+                      <Button className="mt-6 w-full" variant="glow" disabled={needsEcho} onClick={() => setPane("field")}>
                         Следующий ход
                       </Button>
                     )}
+                    {letterOpen ? <LetterCard /> : null}
                   </>
                 ) : innerBrief ? (
                   <>
