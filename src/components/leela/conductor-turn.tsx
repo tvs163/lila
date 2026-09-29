@@ -21,13 +21,13 @@ export function ConductorTurn({ at }: { at?: number }) {
       {speech.essence ? <p className="mt-2">{speech.essence}</p> : null}
       {heard?.arrive?.speech ? <p className="mt-3 text-fg">{heard.arrive.speech}</p> : speech.link ? <p className="mt-3 text-muted">{speech.link}</p> : null}
       {listening ? <p className="mt-3 text-sm text-gold">Проводник собирает вопрос к этой клетке…</p> : null}
+      {speech.wait ? <p className="mt-3 text-sm text-muted">{speech.wait}</p> : null}
       {question ? (
-        <>
-          <h4 className="mt-4 text-sm tracking-widest text-gold uppercase">Вопрос</h4>
-          <p className="mt-2">{question}</p>
-        </>
+        <div className="question-core mt-5 rounded-3xl border border-gold bg-bg-raise px-5 py-5">
+          <p className="text-sm tracking-widest text-gold uppercase">Вопрос проводника</p>
+          <p className="mt-3 font-display text-3xl leading-snug text-fg">{question}</p>
+        </div>
       ) : null}
-      <p className="mt-3 text-sm text-muted">{speech.wait}</p>
     </div>
   );
 }

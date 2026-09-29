@@ -264,6 +264,13 @@ export function Play() {
                 ) : shown ? (
                   <>
                     <ConductorTurn at={shown.at} />
+                    {needsEcho && latest ? <EchoChoice at={latest.at} /> : null}
+                    {won ? null : (
+                      <Button className="mt-6 w-full" variant="glow" disabled={needsEcho} onClick={() => setPane("field")}>
+                        Следующий ход
+                      </Button>
+                    )}
+                    {letterOpen ? <LetterCard /> : null}
                     {log.length > 1 ? (
                       <div className="mt-5 flex gap-2">
                         <Button
@@ -290,13 +297,6 @@ export function Play() {
                         </Button>
                       </div>
                     ) : null}
-                    {needsEcho && latest ? <EchoChoice at={latest.at} /> : null}
-                    {won ? null : (
-                      <Button className="mt-6 w-full" variant="glow" disabled={needsEcho} onClick={() => setPane("field")}>
-                        Следующий ход
-                      </Button>
-                    )}
-                    {letterOpen ? <LetterCard /> : null}
                   </>
                 ) : innerBrief ? (
                   <>

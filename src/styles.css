@@ -272,6 +272,15 @@
   }
 }
 
+.question-core {
+  box-shadow:
+    0 0 0 1px rgb(243 236 223 / 8%) inset,
+    0 0 36px rgb(214 186 122 / 22%);
+  background:
+    radial-gradient(120% 80% at 50% 0%, rgb(214 186 122 / 14%), transparent 58%),
+    rgb(16 12 28 / 92%);
+}
+
 .wisdom-veil {
   background: rgb(6 4 14 / 88%);
   backdrop-filter: blur(12px);
