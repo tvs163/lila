@@ -19,7 +19,7 @@ function when(iso: string) {
 function SledPage() {
   const [key, setKey] = useState("");
   const [rows, setRows] = useState<PlayAccount[] | null>(null);
-  const [closed, setClosed] = useState<"mismatch" | "missing" | "db" | null>(null);
+  const [closed, setClosed] = useState<"mismatch" | "missing" | "db" | "nodb" | null>(null);
   const [pending, setPending] = useState(false);
 
   async function open() {
@@ -80,6 +80,9 @@ function SledPage() {
         {closed === "mismatch" ? <p className="text-sm text-gold">Фраза не совпала с STATS_KEY.</p> : null}
         {closed === "missing" ? (
           <p className="text-sm text-gold">На сервере нет STATS_KEY. Добавь её в проект lila-pied для Production и пересобери без старого кеша.</p>
+        ) : null}
+        {closed === "nodb" ? (
+          <p className="text-sm text-gold">Ключ верный. Базы у проекта нет: слева Storage, затем Neon, подключи к lila-pied и сделай Redeploy.</p>
         ) : null}
         {closed === "db" ? (
           <p className="text-sm text-gold">Ключ подошёл, но список не открылся: база не ответила.</p>

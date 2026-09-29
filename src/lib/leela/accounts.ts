@@ -33,10 +33,27 @@ function gate(key: string): "ok" | "missing" | "mismatch" {
   return key === expected ? "ok" : "mismatch";
 }
 
+async function accountsSql() {
+  const sql = await getSql();
+  await sql`
+    create table if not exists play_accounts (
+      id text primary key,
+      nickname text not null default '',
+      visits integer not null default 0,
+      moves integer not null default 0,
+      cell integer not null default 0,
+      seconds integer not null default 0,
+      first_seen timestamptz not null default now(),
+      last_seen timestamptz not null default now()
+    )
+  `;
+  return sql;
+}
+
 export const noteAccount = createServerFn({ method: "POST" })
   .validator((input: unknown) => NoteInput.parse(input))
   .handler(async ({ data }) => {
-    const sql = await getSql();
+    const sql = await accountsSql();
     const visit = data.visit ? 1 : 0;
     await sql`
       insert into play_accounts (id, nickname, visits, moves, cell, seconds)
@@ -57,11 +74,12 @@ export const noteAccount = createServerFn({ method: "POST" })
 
 export const readAccounts = createServerFn({ method: "POST" })
   .validator((input: unknown) => z.object({ key: z.string().max(200) }).parse(input))
-  .handler(async ({ data }): Promise<{ ok: true; rows: PlayAccount[] } | { ok: false; reason: "missing" | "mismatch" | "db" }> => {
+  .handler(async ({ data }): Promise<{ ok: true; rows: PlayAccount[] } | { ok: false; reason: "missing" | "mismatch" | "db" | "nodb" }> => {
     const allowed = gate(data.key.trim());
     if (allowed !== "ok") return { ok: false, reason: allowed };
+    if (dbSource === "pglite" && process.env.VERCEL) return { ok: false, reason: "nodb" };
     try {
-      const sql = await getSql();
+      const sql = await accountsSql();
     const rows = await sql<{
       id: string;
       nickname: string;
