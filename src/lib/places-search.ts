@@ -12,7 +12,7 @@ export const searchPlaces = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<RemotePlace[]> => {
     const url = new URL("https://nominatim.openstreetmap.org/search");
     url.searchParams.set("format", "jsonv2");
-    url.searchParams.set("limit", "5");
+    url.searchParams.set("limit", "2");
     url.searchParams.set("q", data.query);
     try {
       const response = await fetch(url, {

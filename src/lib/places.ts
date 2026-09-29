@@ -43,6 +43,6 @@ export const CITIES: City[] = [
 
 export function matchCities(query: string): City[] {
   const needle = query.trim().toLowerCase();
-  if (needle.length < 1) return CITIES.slice(0, 8);
-  return CITIES.filter((city) => city.label.toLowerCase().includes(needle)).slice(0, 8);
+  if (needle.length < 1) return [];
+  return CITIES.filter((city) => city.label.toLowerCase().includes(needle)).slice(0, 2);
 }

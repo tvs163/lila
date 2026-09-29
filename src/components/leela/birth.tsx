@@ -123,13 +123,15 @@ export function Birth() {
       ) : null}
 
       <div className="grid gap-2">
-        {local.map((city) => (
-          <PlaceButton key={city.label} place={city} onChoose={choose} />
-        ))}
-        {remote
-          .filter((place) => !local.some((city) => city.label === place.label))
-          .map((place) => (
-            <PlaceButton key={`${place.lat}-${place.lon}`} place={place} onChoose={choose} />
+        {[
+          ...local.map((city) => ({ key: city.label, place: city })),
+          ...remote
+            .filter((place) => !local.some((city) => city.label === place.label))
+            .map((place) => ({ key: `${place.lat}-${place.lon}`, place })),
+        ]
+          .slice(0, 2)
+          .map(({ key, place }) => (
+            <PlaceButton key={key} place={place} onChoose={choose} />
           ))}
         {searching ? <p className="text-sm text-muted">Ищу город…</p> : null}
       </div>
