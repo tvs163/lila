@@ -89,18 +89,17 @@ export function conduct(outcome: RollOutcome, intention: string): Speech {
     }
   }
 
-  const questions = [dest.question];
-  if (outcome.kind !== "win") {
-    questions.push(
-      `Где в «${wish}» состояние «${dest.name}» уже действует, а где ты говоришь о запросе так, будто этой клетки нет?`,
-    );
-  }
+  const questions = [
+    outcome.kind === "win"
+      ? "Что в этом вопросе теперь твоё, а что больше не нужно тащить?"
+      : `Где в вопросе «${wish}» прямо сейчас есть «${dest.name.toLowerCase()}»? Назови один момент: с кем это было и что ты тогда сделал.`,
+  ];
 
   return {
     move,
     title: `${dest.id}. ${dest.name} — ${dest.sanskrit}`,
     essence: dest.essence,
-    link: `Я не решаю «${wish}». Клетка показывает, каким состоянием запрос сейчас окрашен — не что тебе делать.`,
+    link: `Речь про твой вопрос «${wish}». Не про судьбу и не про совет, что делать.`,
     questions,
     wait:
       outcome.kind === "win"
