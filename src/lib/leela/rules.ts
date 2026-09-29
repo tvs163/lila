@@ -48,15 +48,8 @@ export function rollDie(): number {
   return (buffer[0] % 6) + 1;
 }
 
-export function rollsForTurn(position: number, priorMisses: number, next: () => number): number[] {
-  const rolls = [next()];
-  if (position > 0 || priorMisses < 1) return rolls;
-  let guard = 0;
-  while (rolls[rolls.length - 1] !== 6 && guard < 24) {
-    rolls.push(next());
-    guard += 1;
-  }
-  return rolls;
+export function rollsForTurn(_position: number, _priorMisses: number, next: () => number): number[] {
+  return [next()];
 }
 
 function resolve(cell: number): { to: number; via: Via } {
@@ -67,19 +60,17 @@ function resolve(cell: number): { to: number; via: Via } {
 
 export function applyRoll(position: number, roll: number): RollOutcome {
   if (position <= 0) {
-    if (roll !== 6) {
-      return { roll, from: 0, landed: null, to: 0, kind: "unborn", via: null, extra: false };
-    }
-    const next = resolve(1);
+    const cell = Math.min(6, Math.max(1, roll));
+    const next = resolve(cell);
     const win = next.to === 68;
     return {
       roll,
       from: 0,
-      landed: 1,
+      landed: cell,
       to: next.to,
       kind: win ? "win" : "birth",
       via: next.via,
-      extra: !win,
+      extra: win ? false : roll === 6,
     };
   }
 

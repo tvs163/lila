@@ -12,8 +12,9 @@ export function narrate(outcome: RollOutcome): string {
   const landed = outcome.landed ? squareById(outcome.landed) : null;
   const dest = squareById(outcome.to);
   if (outcome.kind === "birth") {
-    const base = `Шестёрка рождает тебя на клетке «${dest.name}». И сразу открывает ещё два броска.`;
-    return outcome.via ? `${base} ${viaLine(outcome)}` : base;
+    const base = `Выпало ${outcome.roll}. Ты на клетке «${dest.name}».`;
+    const bonus = outcome.extra ? " Шестёрка открывает ещё два броска." : "";
+    return outcome.via ? `${base} ${viaLine(outcome)}${bonus}` : `${base}${bonus}`;
   }
   const moved = landed
     ? `Выпало ${outcome.roll}. Ты приходишь на «${landed.name}».`

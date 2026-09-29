@@ -80,15 +80,12 @@ export function conduct(outcome: RollOutcome, intention: string): Speech {
         : `Выпало ${outcome.roll}. Фишка ступает на ${touched.id}, «${touched.name}». Змея этой клетки сама опускает на ${dest.id}: урок ещё живой. Отдельный бросок для спуска не нужен.`;
   }
   if (outcome.from <= 0 && outcome.kind === "birth") {
-    const seq = outcome.rolls && outcome.rolls.length > 1 ? outcome.rolls : null;
-    move = seq
-      ? `Сначала выпало ${seq.slice(0, -1).join(", ")}. Входа не было, и кость переброшена сама: ${seq[seq.length - 1]}. Это рождение на клетке ${dest.id}.`
-      : `Выпало 6. Это рождение: фишка входит на клетку ${dest.id}.`;
+    move = `Выпало ${outcome.roll}. Фишка встаёт на клетку ${dest.id}.`;
     if (outcome.via && outcome.landed && outcome.landed !== dest.id) {
       move +=
         outcome.via === "arrow"
-          ? " Стрела первой клетки поднимает дальше без второго броска."
-          : " Змея первой клетки опускает дальше без второго броска.";
+          ? " Стрела этой клетки поднимает дальше без второго броска."
+          : " Змея этой клетки опускает дальше без второго броска.";
     }
   }
 

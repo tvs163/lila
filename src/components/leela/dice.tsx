@@ -53,8 +53,6 @@ export function DiceThrow({
     return () => cancelAnimationFrame(frame);
   }, [face.x, face.y, outcome.roll]);
 
-  const seq = outcome.rolls && outcome.rolls.length > 1 ? outcome.rolls : null;
-
   return (
     <div className="fixed inset-0 z-40 flex items-center justify-center bg-bg/75 px-6 backdrop-blur-sm" role="dialog" aria-label="Бросок кости">
       <div className="relative grid place-items-center">
@@ -89,8 +87,7 @@ export function DiceThrow({
           </div>
         </div>
         <p className="mt-8 text-center font-display text-6xl text-gold tabular-nums">{settled ? outcome.roll : "·"}</p>
-        <p className="mt-2 text-center text-sm text-muted">{seq ? "Кость ищет вход на поле" : "Кость брошена"}</p>
-        {seq ? <p className="mt-1 text-sm text-gold tabular-nums">{seq.join("  ·  ")}</p> : null}
+        <p className="mt-2 text-center text-sm text-muted">Кость брошена</p>
       </div>
     </div>
   );
