@@ -32,16 +32,17 @@ export function Metrika() {
     const w = window as unknown as { ym?: YmFn };
     w.ym =
       w.ym ||
-      function stub(...args: unknown[]) {
-        (w.ym!.a = w.ym!.a || []).push(args);
+      function stub() {
+        (w.ym!.a = w.ym!.a || []).push([].slice.call(arguments));
       };
     w.ym.l = Date.now();
     const src = `https://mc.yandex.ru/metrika/tag.js?id=${COUNTER}`;
     if (![...document.scripts].some((script) => script.src === src)) {
       const tag = document.createElement("script");
+      const first = document.getElementsByTagName("script")[0];
       tag.async = true;
       tag.src = src;
-      document.head.appendChild(tag);
+      first?.parentNode?.insertBefore(tag, first);
     }
     w.ym(Number(COUNTER), "init", {
       ssr: true,
@@ -53,6 +54,8 @@ export function Metrika() {
       url: location.href,
     });
     w.ym(Number(COUNTER), "hit", window.location.href);
+    const pixel = new Image();
+    pixel.src = `https://mc.yandex.ru/watch/${COUNTER}?page-url=${encodeURIComponent(location.href)}&page-ref=${encodeURIComponent(document.referrer)}`;
     reach();
   }, []);
 
