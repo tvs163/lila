@@ -14,7 +14,8 @@ export function LetterCard() {
   const log = useGame((state) => state.log);
   const journal = useGame((state) => state.journal);
   const letter = useGame((state) => state.letter);
-  const ready = Boolean(letter?.fold && letter.emotions && letter.heart && letter.tools?.length);
+  const echoes = useGame((state) => state.echoes);
+  const ready = Boolean(letter?.temperament && letter.strength && letter.shadow && letter.heart && letter.tools?.length);
   const saveLetter = useGame((state) => state.saveLetter);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -27,6 +28,13 @@ export function LetterCard() {
       .map((entry) => entry.to)
       .filter((id) => Number.isInteger(id) && id > 0 && id <= 72)
       .slice(-12);
+    const names = { body: "ощущениях тела", thought: "мыслях", feeling: "эмоциях" } as const;
+    const seeing = echoes.length
+      ? `чаще в ${names[echoes[echoes.length - 1]]}; ответы: ${echoes
+          .slice(-6)
+          .map((item) => names[item])
+          .join(", ")}`
+      : "";
     const notes = journal
       .slice(0, 3)
       .map((entry) => entry.text.trim().slice(0, 180))
@@ -48,6 +56,7 @@ export function LetterCard() {
           },
           cells,
           notes,
+          seeing: seeing.slice(0, 220),
         },
       });
       if (!result.ok) {
@@ -83,7 +92,7 @@ export function LetterCard() {
       <div className="mt-6 border-t border-line pt-5">
         <h3 className="font-display text-2xl">Письмо о тебе</h3>
         <p className="mt-2 text-sm text-muted">
-          Под твой вопрос: какой ты, где сила и где слабина, как быть с чувствами, какие практики помогут и чем себя напомнить. Файл можно скачать.
+          Под твой вопрос: темперамент, сильная и слабая сторона и четыре шага к гармонии. Чем дальше игра, тем точнее файл.
         </p>
         <LetterFine early={early} />
         <Button className="mt-3 w-full" variant="glow" disabled={busy} onClick={() => void gather()}>
@@ -98,23 +107,23 @@ export function LetterCard() {
     <div className="mt-6 flex flex-col gap-4 border-t border-line pt-5 text-left">
       <h3 className="font-display text-2xl">Письмо проводника</h3>
       <section>
-        <h4 className="text-sm tracking-widest text-gold uppercase">Какой ты в этом вопросе</h4>
-        <p className="mt-2">{letter.fold}</p>
+        <h4 className="text-sm tracking-widest text-gold uppercase">Твой вопрос</h4>
+        <p className="mt-2">{intention}</p>
       </section>
       <section>
-        <h4 className="text-sm tracking-widest text-gold uppercase">Сильная сторона</h4>
+        <h4 className="text-sm tracking-widest text-gold uppercase">Темперамент</h4>
+        <p className="mt-2">{letter.temperament}</p>
+      </section>
+      <section>
+        <h4 className="text-sm tracking-widest text-gold uppercase">Сильная сторона темперамента</h4>
         <p className="mt-2">{letter.strength}</p>
       </section>
       <section>
-        <h4 className="text-sm tracking-widest text-gold uppercase">Слабая сторона</h4>
+        <h4 className="text-sm tracking-widest text-gold uppercase">Слабая сторона темперамента</h4>
         <p className="mt-2">{letter.shadow}</p>
       </section>
       <section>
-        <h4 className="text-sm tracking-widest text-gold uppercase">Как работать с эмоциями</h4>
-        <p className="mt-2">{letter.emotions}</p>
-      </section>
-      <section>
-        <h4 className="text-sm tracking-widest text-gold uppercase">Практики</h4>
+        <h4 className="text-sm tracking-widest text-gold uppercase">Что делать</h4>
         <ol className="mt-2 flex list-decimal flex-col gap-2 pl-5">
           {letter.tools.map((tool) => (
             <li key={tool}>{tool}</li>
@@ -122,7 +131,7 @@ export function LetterCard() {
         </ol>
       </section>
       <section>
-        <h4 className="text-sm tracking-widest text-gold uppercase">У тебя уже есть</h4>
+        <h4 className="text-sm tracking-widest text-gold uppercase">Опора</h4>
         <p className="mt-2">{letter.heart}</p>
       </section>
       <LetterFine early={early} />

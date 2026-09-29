@@ -4,10 +4,9 @@ import { squareById } from "@/lib/leela/board";
 import { birthPortrait } from "@/lib/vedic/portrait";
 
 export type PathLetter = {
-  fold: string;
+  temperament: string;
   strength: string;
   shadow: string;
-  emotions: string;
   tools: string[];
   heart: string;
 };
@@ -29,17 +28,18 @@ const Input = z.object({
   }),
   cells: z.array(z.number().int().min(1).max(72)).max(24),
   notes: z.array(z.string().trim().max(240)).max(4),
+  seeing: z.string().trim().max(220).default(""),
 });
 
 const SYSTEM = `Ты проводник «Лилы». Короткое письмо по-русски. Агни — мужской род, Сома — женский. Спокойно, без театра.
-Рисунок человека уже посчитан. Опирайся на него под его запрос, но не называй источник. Нельзя: астрология, гороскоп, планета, знак, накшатра, лагна, психоматрица, цифра, дата рождения, карта, матрица. Не называй пол. Не предсказывай. Не перечисляй клетки.
-fold — 4 коротких предложения, какой он в этом запросе.
-strength — 2 предложения, сильная сторона.
-shadow — 2 предложения, слабая сторона.
-emotions — 3 предложения, как быть с чувствами.
-tools — ровно 4 практики, каждая одно короткое предложение.
-heart — 3 предложения: нужное уже есть внутри.
-Только JSON: {"fold":"...","strength":"...","shadow":"...","emotions":"...","tools":["...","...","...","..."],"heart":"..."}`;
+Рисунок уже посчитан. Опирайся на него и на запрос человека, но не называй источник. Нельзя: астрология, гороскоп, планета, знак, накшатра, лагна, психоматрица, цифра, дата рождения, карта, матрица. Не называй пол. Не предсказывай. Не перечисляй клетки.
+Если сказано, чем он отвечает — ощущениями тела, мыслями или эмоциями — темперамент и шаги пиши на этом языке. Ощущения: телесные шаги. Мысли: ясные и короткие. Эмоции: через чувство, которое можно назвать.
+temperament — 4 коротких предложения, как он устроен именно в этом вопросе.
+strength — 2 предложения, сильная сторона темперамента: что уже помогает.
+shadow — 2 предложения, слабая сторона темперамента: где сам себе мешает, без ярлыка.
+tools — ровно 4 конкретных шага под этот вопрос и этот темперамент. Каждый — одно короткое предложение.
+heart — 3 предложения: нужное уже есть, его ищут внутри. Вопрос, который истощал, может стать источником силы.
+Только JSON: {"temperament":"...","strength":"...","shadow":"...","tools":["...","...","...","..."],"heart":"..."}`;
 
 const forbidden = /астролог|гороскоп|планет|зодиак|накшатр|лагн|психоматриц|дата рождения|натальн/i;
 
@@ -50,26 +50,24 @@ function parseLetter(raw: string): PathLetter | null {
   if (start < 0 || end <= start) return null;
   try {
     const json = JSON.parse(cleaned.slice(start, end + 1)) as {
-      fold?: unknown;
+      temperament?: unknown;
       strength?: unknown;
       shadow?: unknown;
-      emotions?: unknown;
       tools?: unknown;
       heart?: unknown;
     };
     const text = (value: unknown, min: number, max: number) => (typeof value === "string" && value.trim().length >= min ? value.trim().slice(0, max) : "");
-    const fold = text(json.fold, 40, 900);
+    const temperament = text(json.temperament, 40, 900);
     const strength = text(json.strength, 20, 500);
     const shadow = text(json.shadow, 20, 500);
-    const emotions = text(json.emotions, 20, 700);
     const heart = text(json.heart, 20, 700);
     const tools = Array.isArray(json.tools)
       ? json.tools.filter((item): item is string => typeof item === "string" && item.trim().length > 8).map((item) => item.trim().slice(0, 220)).slice(0, 4)
       : [];
-    if (!fold || !strength || !shadow || !emotions || !heart || tools.length < 3) return null;
-    const whole = [fold, strength, shadow, emotions, heart, ...tools].join(" ");
+    if (!temperament || !strength || !shadow || !heart || tools.length < 3) return null;
+    const whole = [temperament, strength, shadow, heart, ...tools].join(" ");
     if (forbidden.test(whole)) return null;
-    return { fold, strength, shadow, emotions, tools, heart };
+    return { temperament, strength, shadow, tools, heart };
   } catch {
     return null;
   }
@@ -98,6 +96,7 @@ export const composeLetter = createServerFn({ method: "POST" })
       `запрос: ${data.intention}`,
       trail.length ? `пройденное, не перечисляй: ${trail.slice(0, 8).join(", ")}` : "",
       data.notes.length ? `заметки, не цитируй: ${data.notes.join(" | ")}` : "",
+      data.seeing ? `чем отвечает, не зачитывай ярлык: ${data.seeing}` : "",
       `рисунок, не зачитывай: ${portrait.slice(0, 700)}`,
     ]
       .filter(Boolean)
