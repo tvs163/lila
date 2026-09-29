@@ -7,8 +7,8 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        gold: "bg-gold text-bg hover:bg-gold/90",
-        glow: "glow-action border border-gold bg-surface text-fg hover:bg-bg-raise",
+        gold: "pill-cta text-white",
+        glow: "pill-cta text-white",
         quiet: "border border-line bg-transparent text-fg hover:border-gold-dim",
       },
     },
@@ -19,8 +19,18 @@ const buttonVariants = cva(
 type Props = ButtonHTMLAttributes<HTMLButtonElement> &
   VariantProps<typeof buttonVariants> & { ref?: Ref<HTMLButtonElement> };
 
-export function Button({ className, variant, type = "button", ref, ...props }: Props) {
-  return <button ref={ref} type={type} className={cn(buttonVariants({ variant }), className)} {...props} />;
+export function Button({ className, variant, type = "button", ref, children, ...props }: Props) {
+  const primary = variant !== "quiet";
+  return (
+    <button ref={ref} type={type} className={cn(buttonVariants({ variant }), className)} {...props}>
+      {primary ? (
+        <span aria-hidden className="text-lg leading-none">
+          ✦
+        </span>
+      ) : null}
+      {children}
+    </button>
+  );
 }
 
 export const fieldClass =

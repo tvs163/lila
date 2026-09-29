@@ -293,13 +293,18 @@
   box-shadow: 0 0 10px color-mix(in oklab, var(--color-gold) 40%, transparent);
 }
 
-.glow-action {
-  background:
-    radial-gradient(120% 80% at 50% 0%, rgb(212 176 114 / 18%), transparent 55%),
-    var(--color-surface);
+.pill-cta {
+  min-height: 3.4rem;
+  border: 0;
+  background: linear-gradient(100deg, #6e63f0 0%, #9b78ef 36%, #e59bc8 74%, #f3c4b6 100%);
   box-shadow:
-    0 0 0 1px color-mix(in oklab, var(--color-gold) 75%, transparent),
-    0 0 28px color-mix(in oklab, var(--color-violet) 55%, transparent);
+    0 10px 28px rgb(120 98 210 / 38%),
+    inset 0 1px 0 rgb(255 255 255 / 48%);
+  font-weight: 600;
+}
+
+.pill-cta:hover {
+  filter: brightness(1.06);
 }
 
 .die-pop {
