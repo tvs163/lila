@@ -84,7 +84,7 @@ export function Birth() {
   return (
     <form onSubmit={submit} className="mx-auto flex min-h-dvh w-full max-w-lg flex-col justify-center gap-6 px-5 py-12">
       <header>
-        <LilaLogo />
+        <LilaLogo large />
         <p className="mt-4 text-sm tracking-widest text-gold uppercase">{nickname}</p>
         <h1 className="mt-2 font-display text-5xl">Когда ты родился</h1>
         <p className="mt-4 text-muted">
