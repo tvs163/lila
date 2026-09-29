@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useGame } from "@/lib/game-store";
 
-const COUNTER = String(import.meta.env.VITE_METRIKA_ID ?? "").replace(/\D/g, "");
+const COUNTER = String(import.meta.env.VITE_METRIKA_ID ?? "113180218").replace(/\D/g, "");
 
 type YmFn = {
   (...args: unknown[]): void;
@@ -36,7 +36,7 @@ export function Metrika() {
         (w.ym!.a = w.ym!.a || []).push(args);
       };
     w.ym.l = Date.now();
-    const src = "https://mc.yandex.ru/metrika/tag.js";
+    const src = `https://mc.yandex.ru/metrika/tag.js?id=${COUNTER}`;
     if (![...document.scripts].some((script) => script.src === src)) {
       const tag = document.createElement("script");
       tag.async = true;
@@ -44,10 +44,13 @@ export function Metrika() {
       document.head.appendChild(tag);
     }
     w.ym(Number(COUNTER), "init", {
-      clickmap: false,
+      ssr: true,
+      clickmap: true,
       trackLinks: true,
       accurateTrackBounce: true,
       webvisor: false,
+      referrer: document.referrer,
+      url: location.href,
     });
     w.ym(Number(COUNTER), "hit", window.location.href);
     reach();
