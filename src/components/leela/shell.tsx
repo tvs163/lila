@@ -19,7 +19,7 @@ const STARS = Array.from({ length: 48 }, (_, index) => {
 
 export function Shell({ children }: { children: ReactNode }) {
   return (
-    <div className="relative min-h-dvh overflow-x-hidden bg-bg text-fg">
+    <div className="relative min-h-dvh overflow-x-clip bg-bg text-fg">
       <div className="pointer-events-none fixed inset-0 overflow-hidden" aria-hidden>
         <div className="cosmic-veil" />
         <div className="wisdom-light" />

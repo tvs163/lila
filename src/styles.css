@@ -386,7 +386,7 @@
 .lila-aura {
   position: absolute;
   inset: -40% -18%;
-  background: radial-gradient(ellipse at 50% 55%, rgb(212 176 114 / 34%), rgb(141 120 214 / 16%) 42%, transparent 70%);
+  background: radial-gradient(ellipse at 50% 60%, rgb(212 176 114 / 28%), rgb(141 120 214 / 10%) 48%, transparent 78%);
   filter: blur(10px);
   animation: lila-breathe 8s ease-in-out infinite;
 }
