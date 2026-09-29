@@ -5,6 +5,7 @@ import { BreathRitual } from "@/components/leela/breath";
 import { Intention } from "@/components/leela/intention";
 import { Intro } from "@/components/leela/intro";
 import { Play } from "@/components/leela/play";
+import { Metrika } from "@/components/leela/metrika";
 import { QuietPulse } from "@/components/leela/quiet-pulse";
 import { Shell } from "@/components/leela/shell";
 import { ensureBrief } from "@/lib/leela/prepare";
@@ -34,6 +35,7 @@ export function LilaApp() {
   return (
     <Shell>
       <QuietPulse />
+      <Metrika />
       <div key={seenIntro ? phase : "intro"} className="cosmic-screen">
       {phase === "intro" || !seenIntro ? <Intro /> : null}
       {phase === "arrival" && seenIntro ? <Arrival /> : null}
