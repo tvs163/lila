@@ -70,7 +70,7 @@ export function Intro() {
   const ready = shown > blocks.length;
 
   return (
-    <main className="relative z-10 mx-auto -mt-10 flex min-h-dvh w-full max-w-lg flex-col px-5 pt-8 pb-24">
+    <main className="relative z-10 mx-auto -mt-24 flex min-h-dvh w-full max-w-lg flex-col px-5 pt-1 pb-24">
       <div className="relative z-10 flex flex-col gap-6">
         <header className="relative">
           <Gate className="pointer-events-none absolute -top-6 left-1/2 h-40 w-full -translate-x-1/2 text-gold opacity-40" />
