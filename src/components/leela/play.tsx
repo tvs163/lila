@@ -29,7 +29,7 @@ export function Play() {
   const lastBreathAt = useGame((state) => state.lastBreathAt);
   const log = useGame((state) => state.log);
   const won = useGame((state) => state.won);
-  const letterOpen = won || log.filter((entry) => entry.kind !== "unborn").length >= 3;
+  const letterOpen = won || log.filter((entry) => entry.kind !== "unborn").length >= 5;
   const journal = useGame((state) => state.journal);
   const innerBrief = useGame((state) => state.innerBrief);
   const briefKey = useGame((state) => state.briefKey);
@@ -387,7 +387,7 @@ function About() {
               <p>Ты кидаешь кость. Открывается состояние, в котором этот вопрос сейчас живёт. Перед следующим ходом отмечаешь, где вопрос отразился ярче: в ощущениях тела, в мыслях или в эмоциях.</p>
               <p>Проводник задаёт один вопрос. Твоя часть — быть честным с собой. Отвечать вслух не нужно.</p>
               <p>Если захочешь, оставишь заметку только себе. Чем прямее смотришь, тем понятнее, что с этим вопросом делать.</p>
-              <p>Игра может занять до 60 минут. Её всегда можно закрыть и вернуться: поле помнит клетку и прогресс. После третьего хода откроется письмо о тебе: сила, слабина и чем опираться в своём вопросе.</p>
+              <p>Игра может занять до 60 минут. Её всегда можно закрыть и вернуться: поле помнит клетку и прогресс. После пятого хода можно открыть письмо о себе — оно свёрнуто, пока сам не нажмёшь.</p>
             </div>
             <Dialog.Close asChild>
               <Button className="mt-6 w-full">Закрыть</Button>

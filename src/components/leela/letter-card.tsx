@@ -9,7 +9,7 @@ export function LetterKeeper() {
   const letter = useGame((state) => state.letter);
   const moves = useGame((state) => state.log.filter((entry) => entry.kind !== "unborn").length);
   useEffect(() => {
-    if (moves < 3 || (letter?.temperament && letter.prism)) return;
+    if (moves < 5 || (letter?.temperament && letter.prism)) return;
     void ensureLetter();
   }, [moves, letter]);
   return null;
@@ -22,6 +22,7 @@ export function LetterCard() {
   const log = useGame((state) => state.log);
   const letter = useGame((state) => state.letter);
   const ready = Boolean(letter?.temperament && letter.prism && letter.strength && letter.shadow && letter.heart && letter.tools?.length);
+  const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
@@ -59,12 +60,27 @@ export function LetterCard() {
     }
   }
 
+  if (!open) {
+    return (
+      <div className="mt-6 border-t border-line pt-5">
+        <Button className="w-full" variant="quiet" onClick={() => setOpen(true)}>
+          Письмо о тебе
+        </Button>
+      </div>
+    );
+  }
+
   if (!ready || !letter) {
     return (
       <div className="mt-6 border-t border-line pt-5">
-        <h3 className="font-display text-2xl">Письмо о тебе</h3>
+        <div className="flex items-center justify-between gap-3">
+          <h3 className="font-display text-2xl">Письмо о тебе</h3>
+          <Button variant="quiet" onClick={() => setOpen(false)}>
+            Свернуть
+          </Button>
+        </div>
         <p className="mt-2 text-sm text-muted">
-          Под твой вопрос: темперамент, сильная и слабая сторона и четыре шага к гармонии. Письмо начинает собираться само после третьего хода.
+          Под твой вопрос: темперамент, сильная и слабая сторона и четыре шага к гармонии.
         </p>
         <LetterFine early={early} />
         <Button className="mt-3 w-full" variant="glow" disabled={busy} onClick={() => void gather()}>
@@ -77,7 +93,12 @@ export function LetterCard() {
 
   return (
     <div className="mt-6 flex flex-col gap-4 border-t border-line pt-5 text-left">
-      <h3 className="font-display text-2xl">Письмо проводника</h3>
+      <div className="flex items-center justify-between gap-3">
+        <h3 className="font-display text-2xl">Письмо проводника</h3>
+        <Button variant="quiet" onClick={() => setOpen(false)}>
+          Свернуть
+        </Button>
+      </div>
       <section>
         <h4 className="text-sm tracking-widest text-gold uppercase">Твой вопрос</h4>
         <p className="mt-2">{intention}</p>
