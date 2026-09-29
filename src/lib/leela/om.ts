@@ -27,7 +27,7 @@ function mark(playing: boolean) {
 
 function ensure() {
   if (bed) return bed;
-  const audio = new Audio("/sounds/flute-bed.mp3");
+  const audio = new Audio("/sounds/app-bed.mp3");
   audio.loop = true;
   audio.preload = "auto";
   audio.volume = 0.46;
