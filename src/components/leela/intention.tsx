@@ -4,12 +4,10 @@ import { LilaLogo } from "@/components/leela/shell";
 import { useGame } from "@/lib/game-store";
 
 export function Intention() {
-  const guide = useGame((state) => state.guide);
   const nickname = useGame((state) => state.nickname);
   const setIntention = useGame((state) => state.setIntention);
   const [text, setText] = useState("");
   const [error, setError] = useState("");
-  const glad = guide === "soma" ? "Я рада, что ты не спешишь." : "Я рад, что ты не спешишь.";
 
   function submit(event: FormEvent) {
     event.preventDefault();
@@ -27,7 +25,7 @@ export function Intention() {
         <LilaLogo />
         <h1 className="mt-4 font-display text-5xl">{nickname}, с чем ты входишь</h1>
         <p className="mt-4 text-muted">
-          {glad} Не план на год, а вопрос, который уже не отпускает. Он уйдёт проводнику вместе с твоим рисунком — до первого хода.
+          Теперь ты в состоянии «сейчас». Задай вопрос, который создаёт в тебе дисбаланс, и мы начнём диалог с проводником.
         </p>
       </header>
       <label className="block">
