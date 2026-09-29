@@ -88,7 +88,7 @@ export function Birth() {
         <p className="mt-4 text-sm tracking-widest text-gold uppercase">{nickname}</p>
         <h1 className="mt-2 font-display text-5xl">Когда ты родился</h1>
         <p className="mt-4 text-muted">
-          Дата, время и город останутся только на этом устройстве. Карту я не раскладываю. Она нужна, чтобы говорить точнее — и только.
+          Все данные останутся только на Вашем устройстве. Проводник будет учитывать твой темперамент, опираясь на них.
         </p>
       </header>
 
