@@ -32,7 +32,7 @@ export function Shell({ children }: { children: ReactNode }) {
           <span key={star.index} className="star" style={star.style} />
         ))}
       </div>
-      <div className="relative pb-20">{children}</div>
+      <div className="app-safe relative pb-20">{children}</div>
       <SoundToggle />
     </div>
   );

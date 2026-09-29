@@ -64,6 +64,10 @@
   }
 }
 
+.app-safe {
+  padding-top: max(7.5rem, calc(env(safe-area-inset-top, 0px) + 4.75rem));
+}
+
 .nebula {
   position: absolute;
   border-radius: 999px;
