@@ -18,11 +18,8 @@ export function ConductorTurn({ at }: { at?: number }) {
     <div className="text-left">
       <p className="mt-2">{speech.move}</p>
       {speech.title ? <h3 className="mt-3 font-display text-2xl">{speech.title}</h3> : null}
-      {heard?.arrive?.speech ? (
-        <p className="mt-3 text-fg">{heard.arrive.speech}</p>
-      ) : (
-        <p className="mt-3 text-muted">{speech.link}</p>
-      )}
+      {speech.essence ? <p className="mt-2">{speech.essence}</p> : null}
+      {heard?.arrive?.speech ? <p className="mt-3 text-fg">{heard.arrive.speech}</p> : speech.link ? <p className="mt-3 text-muted">{speech.link}</p> : null}
       {listening ? <p className="mt-3 text-sm text-gold">Проводник собирает вопрос к этой клетке…</p> : null}
       {speech.wait ? <p className="mt-3 text-sm text-muted">{speech.wait}</p> : null}
       {question ? (
