@@ -8,7 +8,6 @@ import { useGame } from "@/lib/game-store";
 const ABOUT = [
   "Лила — древняя игра самопознания. Её первое имя — Джняна-чаупада, «игра мудрости»: джняна — мудрость, чаупада — игра в кости.",
   "Она нужна, когда один внутренний вопрос не даёт покоя. Не чтобы получить чужой ответ, а чтобы вопрос дошёл до своей правды и стал фундаментом гармонии и умиротворения.",
-  "Ею пользовались там, где было время смотреть на себя честно. В Индии поле хранили семьи знатоков и учителей. В XX веке философ Хариш Джохари передал его как практику наблюдения за внутренними состояниями. Детская «змейка» — только упрощённый след этой игры.",
   "В психологии Лила работает как зеркало, не как диагноз. Клетка показывает, в каком состоянии сейчас живёт твой вопрос: гнев, иллюзия, страх пустоты, желание казаться сильнее. Это тот же приём, которым пользуются в глубинной беседе и в работе с собой: не советовать, а дать увидеть свой ход. Поэтому к ней возвращаются люди, которым мало общих советов. Им нужна ясность о собственном вопросе.",
 ];
 
@@ -53,7 +52,7 @@ export function Intro() {
   useEffect(() => {
     setShown(0);
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setShown(blocks.length);
+      setShown(blocks.length + 1);
       return;
     }
     let index = 0;
@@ -72,12 +71,12 @@ export function Intro() {
   const ready = shown > blocks.length;
 
   return (
-    <main className="relative z-10 mx-auto flex min-h-dvh w-full max-w-lg flex-col overflow-y-auto px-5 py-10 pb-24">
+    <main className="relative z-10 mx-auto -mt-14 flex min-h-dvh w-full max-w-lg flex-col overflow-y-auto px-5 pt-2 pb-24">
       <DustField />
-      <div className="my-auto flex flex-col gap-8">
+      <div className="flex flex-col gap-6">
         <header className="relative">
           <Gate className="pointer-events-none absolute -top-6 left-1/2 h-40 w-full -translate-x-1/2 text-gold opacity-40" />
-          <div className="relative pt-8 text-center">
+          <div className="relative pt-1 text-center">
             <LilaLogo large />
             <p className="mt-4 text-sm tracking-widest text-gold uppercase">
               {slide === 0 ? "Об игре" : "Как играть и что от тебя нужно"}
