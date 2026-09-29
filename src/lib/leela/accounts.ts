@@ -22,10 +22,15 @@ export type PlayAccount = {
   lastSeen: string;
 };
 
-function gate(key: string) {
-  const expected = process.env.STATS_KEY?.trim() ?? "";
-  if (!expected) return dbSource === "pglite";
-  return key === expected;
+function expectedKey() {
+  const value = process.env["STATS_KEY"];
+  return typeof value === "string" ? value.trim() : "";
+}
+
+function gate(key: string): "ok" | "missing" | "mismatch" {
+  const expected = expectedKey();
+  if (!expected) return dbSource === "pglite" ? "ok" : "missing";
+  return key === expected ? "ok" : "mismatch";
 }
 
 export const noteAccount = createServerFn({ method: "POST" })
@@ -51,10 +56,12 @@ export const noteAccount = createServerFn({ method: "POST" })
   });
 
 export const readAccounts = createServerFn({ method: "POST" })
-  .validator((input: unknown) => z.object({ key: z.string().max(80) }).parse(input))
-  .handler(async ({ data }): Promise<{ ok: true; rows: PlayAccount[] } | { ok: false }> => {
-    if (!gate(data.key)) return { ok: false };
-    const sql = await getSql();
+  .validator((input: unknown) => z.object({ key: z.string().max(200) }).parse(input))
+  .handler(async ({ data }): Promise<{ ok: true; rows: PlayAccount[] } | { ok: false; reason: "missing" | "mismatch" | "db" }> => {
+    const allowed = gate(data.key.trim());
+    if (allowed !== "ok") return { ok: false, reason: allowed };
+    try {
+      const sql = await getSql();
     const rows = await sql<{
       id: string;
       nickname: string;
@@ -83,4 +90,7 @@ export const readAccounts = createServerFn({ method: "POST" })
         lastSeen: new Date(row.last_seen).toISOString(),
       })),
     };
+    } catch {
+      return { ok: false, reason: "db" };
+    }
   });

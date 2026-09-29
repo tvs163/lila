@@ -19,23 +19,23 @@ function when(iso: string) {
 function SledPage() {
   const [key, setKey] = useState("");
   const [rows, setRows] = useState<PlayAccount[] | null>(null);
-  const [closed, setClosed] = useState(false);
+  const [closed, setClosed] = useState<"mismatch" | "missing" | "db" | null>(null);
   const [pending, setPending] = useState(false);
 
   async function open() {
     setPending(true);
-    setClosed(false);
+    setClosed(null);
     try {
       const result = await readAccounts({ data: { key: key.trim() } });
       if (!result.ok) {
         setRows(null);
-        setClosed(true);
+        setClosed(result.reason);
       } else {
         setRows(result.rows);
       }
     } catch {
       setRows(null);
-      setClosed(true);
+      setClosed("db");
     } finally {
       setPending(false);
     }
@@ -77,7 +77,13 @@ function SledPage() {
             {pending ? "Смотрю…" : "Открыть"}
           </Button>
         </form>
-        {closed ? <p className="text-sm text-gold">Ключ не подходит.</p> : null}
+        {closed === "mismatch" ? <p className="text-sm text-gold">Фраза не совпала с STATS_KEY.</p> : null}
+        {closed === "missing" ? (
+          <p className="text-sm text-gold">На сервере нет STATS_KEY. Добавь её в проект lila-pied для Production и пересобери без старого кеша.</p>
+        ) : null}
+        {closed === "db" ? (
+          <p className="text-sm text-gold">Ключ подошёл, но список не открылся: база не ответила.</p>
+        ) : null}
 
         {rows ? (
           <>
