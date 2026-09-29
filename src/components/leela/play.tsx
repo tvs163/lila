@@ -120,17 +120,13 @@ export function Play() {
     if (!current) return;
     spinRef.current = null;
     const snap = useGame.getState();
-    const previous = snap.log[snap.log.length - 1];
-    const echo =
-      previous && snap.markAt === previous.at
-        ? snap.markWhere === "body"
-          ? "в теле"
-          : snap.markWhere === "thought"
-            ? "в мысли"
-            : snap.markWhere === "feeling"
-              ? "в чувстве"
-              : ""
-        : "";
+    const names = { body: "ощущениях тела", thought: "мыслях", feeling: "эмоциях" } as const;
+    const recent = snap.echoes;
+    const last = recent[recent.length - 1];
+    const earlier = recent.slice(0, -1).slice(-4);
+    const echo = last
+      ? `сейчас ярче в ${names[last]}${earlier.length ? `; до этого в ${earlier.map((item) => names[item]).join(", ")}` : ""}`
+      : "";
     const at = commitThrow(current);
     setSpin(null);
     throwing.current = false;
@@ -381,7 +377,7 @@ function About() {
             </div>
             <h3 className="mt-5 font-display text-2xl text-fg">Правила просты</h3>
             <div className="mt-3 flex flex-col gap-3 text-muted">
-              <p>Ты кидаешь кость. Открывается состояние, в котором этот вопрос сейчас живёт. Перед следующим ходом отмечаешь, где это отозвалось: в теле, в мысли или в чувстве.</p>
+              <p>Ты кидаешь кость. Открывается состояние, в котором этот вопрос сейчас живёт. Перед следующим ходом отмечаешь, где вопрос отразился ярче: в ощущениях тела, в мыслях или в эмоциях.</p>
               <p>Проводник задаёт один вопрос. Твоя часть — быть честным с собой. Отвечать вслух не нужно.</p>
               <p>Если захочешь, оставишь заметку только себе. Чем прямее смотришь, тем понятнее, что с этим вопросом делать.</p>
               <p>Обычно это около часа. Можно уйти и вернуться — поле помнит, где ты остановился. После третьего хода откроется письмо о тебе: сила, слабина и чем опираться в своём вопросе.</p>
@@ -451,14 +447,14 @@ function PathMenu({
 function EchoChoice({ at }: { at: number }) {
   const setMark = useGame((state) => state.setMark);
   const choices = [
-    ["body", "В теле"],
-    ["thought", "В мысли"],
-    ["feeling", "В чувстве"],
+    ["body", "В ощущениях тела"],
+    ["thought", "В мыслях"],
+    ["feeling", "В эмоциях"],
   ] as const;
 
   return (
     <div className="mt-6 border-t border-line pt-5">
-      <p className="text-sm text-muted">Где это отозвалось? Следующий ход откроется после выбора.</p>
+      <p className="text-sm text-muted">Услышав вопрос проводника, где он в тебе отражается ярче всего? Следующий ход откроется после выбора.</p>
       <div className="mt-3 flex flex-col gap-2">
         {choices.map(([where, label]) => (
           <Button key={where} variant="quiet" onClick={() => setMark(at, where)}>

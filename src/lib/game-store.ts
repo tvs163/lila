@@ -62,6 +62,7 @@ type Game = PathState & {
   letter: PathLetter | null;
   markAt: number | null;
   markWhere: EchoWhere | null;
+  echoes: EchoWhere[];
   begin: () => void;
   setSound: (sound: boolean) => void;
   setArrival: (nickname: string, gender: Gender, guide: GuideId) => void;
@@ -119,6 +120,7 @@ const initial = {
   letter: null as PathLetter | null,
   markAt: null as number | null,
   markWhere: null as EchoWhere | null,
+  echoes: [] as EchoWhere[],
   ...emptyPath,
 };
 
@@ -215,7 +217,8 @@ export const useGame = create<Game>()(
       saveBrief: (key, speech) =>
         set({ briefKey: key, innerBrief: speech, briefStatus: speech ? "ready" : "quiet" }),
       saveLetter: (letter) => set({ letter }),
-      setMark: (at, where) => set({ markAt: at, markWhere: where }),
+      setMark: (at, where) =>
+        set((state) => ({ markAt: at, markWhere: where, echoes: [...state.echoes, where].slice(-8) })),
       replyToTurn: (text) => {
         const state = get();
         const last = state.log[state.log.length - 1];
@@ -238,7 +241,8 @@ export const useGame = create<Game>()(
         if (!last || last.kind !== "unborn") return;
         set({ answeredAt: last.at, probeFor: null });
       },
-      newPath: () => set({ ...emptyPath, phase: "breath", journal: get().journal, voices: [], letter: null, markAt: null, markWhere: null }),
+      newPath: () =>
+        set({ ...emptyPath, phase: "breath", journal: get().journal, voices: [], letter: null, markAt: null, markWhere: null, echoes: [] }),
       editBirth: () => set({ phase: "birth" }),
       forget: () => {
         resetQuiet();
@@ -248,7 +252,7 @@ export const useGame = create<Game>()(
     {
       name: "lila-journey",
       skipHydration: true,
-      version: 9,
+      version: 10,
       migrate: (persisted, version) => {
         if (!persisted || typeof persisted !== "object") return persisted;
         const state = persisted as {
@@ -268,6 +272,7 @@ export const useGame = create<Game>()(
           letter?: PathLetter | null;
           markAt?: number | null;
           markWhere?: EchoWhere | null;
+          echoes?: EchoWhere[];
         };
         if (version < 2) {
           if (typeof state.extraLeft !== "number") state.extraLeft = state.extraRoll ? SIX_BONUS : 0;
@@ -294,6 +299,7 @@ export const useGame = create<Game>()(
           state.markAt = null;
           state.markWhere = null;
         }
+        if (version < 10 && !Array.isArray(state.echoes)) state.echoes = [];
         return state;
       },
       partialize: (state) => ({
@@ -312,6 +318,7 @@ export const useGame = create<Game>()(
         letter: state.letter,
         markAt: state.markAt,
         markWhere: state.markWhere,
+        echoes: state.echoes,
         intention: state.intention,
         position: state.position,
         visited: state.visited,
