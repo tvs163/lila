@@ -34,9 +34,6 @@ export function Arrival() {
           <LilaLogo large />
           <p className="mt-4 text-sm tracking-widest text-gold uppercase">Игра самопознания</p>
         </div>
-        <p className="relative mt-6 text-muted">
-          Семьдесят две клетки сознания. Проводник связывает каждую с твоим вопросом. Пол нужен, чтобы говорить с тобой точнее: с женщиной и с мужчиной разговор разный.
-        </p>
       </header>
 
       <label className="block">
