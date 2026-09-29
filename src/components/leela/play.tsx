@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState, type FormEvent } from "react"
 import { BoardMap } from "@/components/leela/board-map";
 import { BreathRitual } from "@/components/leela/breath";
 import { ConductorTurn } from "@/components/leela/conductor-turn";
-import { LetterCard } from "@/components/leela/letter-card";
+import { LetterCard, LetterKeeper } from "@/components/leela/letter-card";
 import { DiceThrow } from "@/components/leela/dice";
 import { LilaLogo } from "@/components/leela/shell";
 import { WisdomFloat } from "@/components/leela/wisdom";
@@ -165,6 +165,7 @@ export function Play() {
   return (
     <div className="mx-auto flex min-h-dvh w-full max-w-lg flex-col px-4 py-6">
       {spin ? <DiceThrow outcome={spin} onDone={finishSpin} /> : null}
+      <LetterKeeper />
       <WisdomFloat open={briefPending || listeningAt != null} guide={guide} />
       <header className="flex items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-3">

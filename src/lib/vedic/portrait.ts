@@ -62,3 +62,49 @@ export function birthPortrait(birth: BirthProfile, tendency = ""): string {
   const lean = tendency ? ` Уклон этой клетки: ${tendency}` : "";
   return `Рождение: ${when}. Психоматрица по дате: ${line(byDate)}. С часом рождения: ${line(withTime)}. Ведическая карта, Лахири: ${sky}.${lean}`.slice(0, 1600);
 }
+
+const WAY: Record<string, string> = {
+  Овен: "быстрое действие",
+  Лев: "быстрое действие",
+  Стрелец: "быстрое действие",
+  Телец: "тело и неспешность",
+  Дева: "тело и неспешность",
+  Козерог: "тело и неспешность",
+  Близнецы: "ясную мысль",
+  Весы: "ясную мысль",
+  Водолей: "ясную мысль",
+  Рак: "чувство, которое сначала держит в себе",
+  Скорпион: "чувство, которое сначала держит в себе",
+  Рыбы: "чувство, которое сначала держит в себе",
+};
+
+export function letterSeed(birth: BirthProfile): string {
+  const [year, month, day] = birth.date.split("-");
+  if (!year || !month || !day) return "";
+  const dateDigits = digitsOf(`${day}${month}${year}`);
+  const first = dateDigits.reduce((sum, digit) => sum + digit, 0);
+  const second = digitSum(first);
+  const dayHead = Number(String(Number(day))[0] ?? "0");
+  const third = first - 2 * dayHead;
+  const fourth = digitSum(third);
+  const cells = counts([...dateDigits, ...digitsOf(`${first}${second}${third}${fourth}`), ...digitsOf(birth.time)]);
+  const strong = CELLS.filter(([digit]) => (cells[digit] ?? 0) >= 2).map(([, name]) => name);
+  const thin = CELLS.filter(([digit]) => (cells[digit] ?? 0) === 0).map(([, name]) => name);
+  let manner = "входит в вопрос ровно";
+  try {
+    const chart = readSky(birth);
+    const enter = WAY[chart.lagna.sign] ?? "ровный шаг";
+    const hold = WAY[chart.moon.sign] ?? "ровный шаг";
+    manner = `входит через ${enter}; важное держит через ${hold}`;
+  } catch {
+    manner = "входит в вопрос ровно";
+  }
+  return [
+    manner,
+    strong.length ? `опора: ${strong.slice(0, 3).join(", ")}` : "",
+    thin.length ? `тонкое место: ${thin.slice(0, 3).join(", ")}` : "",
+  ]
+    .filter(Boolean)
+    .join(". ")
+    .slice(0, 420);
+}

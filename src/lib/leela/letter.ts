@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { squareById } from "@/lib/leela/board";
-import { birthPortrait } from "@/lib/vedic/portrait";
+import { letterSeed } from "@/lib/vedic/portrait";
 
 export type PathLetter = {
   temperament: string;
@@ -32,13 +32,13 @@ const Input = z.object({
 });
 
 const SYSTEM = `Ты проводник «Лилы». Короткое письмо по-русски. Агни — мужской род, Сома — женский. Спокойно, без театра.
-Рисунок уже посчитан. Опирайся на него и на запрос человека, но не называй источник. Нельзя: астрология, гороскоп, планета, знак, накшатра, лагна, психоматрица, цифра, дата рождения, карта, матрица. Не называй пол. Не предсказывай. Не перечисляй клетки.
+Рисунок уже сжат в короткую основу на обычном языке. Опирайся на неё и на запрос. Не называй источник и не добавляй новых систем. Нельзя: астрология, гороскоп, планета, знак, накшатра, лагна, психоматрица, цифра, дата рождения, карта, матрица. Не называй пол. Не предсказывай. Не перечисляй клетки.
 Если сказано, чем он отвечает — ощущениями тела, мыслями или эмоциями — темперамент и шаги пиши на этом языке. Ощущения: телесные шаги. Мысли: ясные и короткие. Эмоции: через чувство, которое можно назвать.
-temperament — 4 коротких предложения, как он устроен именно в этом вопросе.
+temperament — 3 коротких предложения, как он устроен именно в этом вопросе.
 strength — 2 предложения, сильная сторона темперамента: что уже помогает.
 shadow — 2 предложения, слабая сторона темперамента: где сам себе мешает, без ярлыка.
 tools — ровно 4 конкретных шага под этот вопрос и этот темперамент. Каждый — одно короткое предложение.
-heart — 3 предложения: нужное уже есть, его ищут внутри. Вопрос, который истощал, может стать источником силы.
+heart — 2 предложения: нужное уже есть, его ищут внутри. Вопрос, который истощал, может стать источником силы.
 Только JSON: {"temperament":"...","strength":"...","shadow":"...","tools":["...","...","...","..."],"heart":"..."}`;
 
 const forbidden = /астролог|гороскоп|планет|зодиак|накшатр|лагн|психоматриц|дата рождения|натальн/i;
@@ -78,8 +78,8 @@ export const composeLetter = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<LetterResult> => {
     const apiKey = process.env.XAI_API_KEY;
     if (!apiKey) return { ok: false, error: "Проводник сейчас молчит" };
-    const portrait = birthPortrait(data.birth);
-    if (portrait.length < 20) return { ok: false, error: "Проводник сейчас молчит" };
+    const seed = letterSeed(data.birth);
+    if (seed.length < 12) return { ok: false, error: "Проводник сейчас молчит" };
     const trail = data.cells
       .map((id) => {
         try {
@@ -97,7 +97,7 @@ export const composeLetter = createServerFn({ method: "POST" })
       trail.length ? `пройденное, не перечисляй: ${trail.slice(0, 8).join(", ")}` : "",
       data.notes.length ? `заметки, не цитируй: ${data.notes.join(" | ")}` : "",
       data.seeing ? `чем отвечает, не зачитывай ярлык: ${data.seeing}` : "",
-      `рисунок, не зачитывай: ${portrait.slice(0, 700)}`,
+      `основа, не зачитывай: ${seed}`,
     ]
       .filter(Boolean)
       .join("\n");
@@ -107,7 +107,7 @@ export const composeLetter = createServerFn({ method: "POST" })
       try {
         const response = await fetch("https://api.x.ai/v1/chat/completions", {
           method: "POST",
-          signal: AbortSignal.timeout(24000),
+          signal: AbortSignal.timeout(14000),
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${apiKey}`,
@@ -115,7 +115,7 @@ export const composeLetter = createServerFn({ method: "POST" })
           body: JSON.stringify({
             model: "grok-4.5",
             temperature: 0.5,
-            max_tokens: 700,
+            max_tokens: 420,
             messages: [
               { role: "system", content: SYSTEM },
               { role: "user", content: user },
