@@ -5,6 +5,7 @@ import { letterSeed } from "@/lib/vedic/portrait";
 
 export type PathLetter = {
   temperament: string;
+  prism: string;
   strength: string;
   shadow: string;
   tools: string[];
@@ -31,15 +32,16 @@ const Input = z.object({
   seeing: z.string().trim().max(220).default(""),
 });
 
-const SYSTEM = `Ты проводник «Лилы». Короткое письмо по-русски. Агни — мужской род, Сома — женский. Спокойно, без театра.
-Рисунок уже сжат в короткую основу на обычном языке. Опирайся на неё и на запрос. Не называй источник и не добавляй новых систем. Нельзя: астрология, гороскоп, планета, знак, накшатра, лагна, психоматрица, цифра, дата рождения, карта, матрица. Не называй пол. Не предсказывай. Не перечисляй клетки.
-Если сказано, чем он отвечает — ощущениями тела, мыслями или эмоциями — темперамент и шаги пиши на этом языке. Ощущения: телесные шаги. Мысли: ясные и короткие. Эмоции: через чувство, которое можно назвать.
-temperament — 3 коротких предложения, как он устроен именно в этом вопросе.
-strength — 2 предложения, сильная сторона темперамента: что уже помогает.
-shadow — 2 предложения, слабая сторона темперамента: где сам себе мешает, без ярлыка.
-tools — ровно 4 конкретных шага под этот вопрос и этот темперамент. Каждый — одно короткое предложение.
-heart — 2 предложения: нужное уже есть, его ищут внутри. Вопрос, который истощал, может стать источником силы.
-Только JSON: {"temperament":"...","strength":"...","shadow":"...","tools":["...","...","...","..."],"heart":"..."}`;
+const SYSTEM = `Ты проводник «Лилы». Письмо по-русски, его должно быть интересно читать. Агни — мужской род, Сома — женский. Спокойно, образно, без театра и без списка тезисов.
+Основа уже посчитана и переведена на обычный язык: как человек встречает мир, чувствует, думает, действует и где у него опора. Это короткая основа характера. Сплети её с его вопросом. Не называй источник. Нельзя: астрология, гороскоп, планета, знак, накшатра, лагна, психоматрица, цифра, дата рождения, карта, матрица. Не называй пол. Не предсказывай. Не перечисляй клетки и не повторяй основу списком.
+Если сказано, чем он отвечает — ощущениями, мыслями или эмоциями — уклад, призму и шаги пиши на этом языке.
+temperament — 5 предложений: внутренний уклад личности, как эти настройки вообще устроены.
+prism — 4 предложения: как именно этот уклад становится призмой, через которую он видит свой вопрос. Не общий характер, а этот вопрос.
+strength — 3 предложения: сильная сторона этого уклада в его вопросе.
+shadow — 3 предложения: слабая сторона этого уклада, где он сам себе мешает. Прямо, без ярлыка.
+tools — ровно 4 конкретных шага под этот вопрос и этот уклад. Каждый — одно живое предложение.
+heart — 3 предложения: нужное уже есть, его ищут внутри. Вопрос, который истощал, может стать источником силы.
+Только JSON: {"temperament":"...","prism":"...","strength":"...","shadow":"...","tools":["...","...","...","..."],"heart":"..."}`;
 
 const forbidden = /астролог|гороскоп|планет|зодиак|накшатр|лагн|психоматриц|дата рождения|натальн/i;
 
@@ -51,23 +53,25 @@ function parseLetter(raw: string): PathLetter | null {
   try {
     const json = JSON.parse(cleaned.slice(start, end + 1)) as {
       temperament?: unknown;
+      prism?: unknown;
       strength?: unknown;
       shadow?: unknown;
       tools?: unknown;
       heart?: unknown;
     };
     const text = (value: unknown, min: number, max: number) => (typeof value === "string" && value.trim().length >= min ? value.trim().slice(0, max) : "");
-    const temperament = text(json.temperament, 40, 900);
-    const strength = text(json.strength, 20, 500);
-    const shadow = text(json.shadow, 20, 500);
-    const heart = text(json.heart, 20, 700);
+    const temperament = text(json.temperament, 80, 1200);
+    const prism = text(json.prism, 60, 1000);
+    const strength = text(json.strength, 40, 700);
+    const shadow = text(json.shadow, 40, 700);
+    const heart = text(json.heart, 40, 800);
     const tools = Array.isArray(json.tools)
-      ? json.tools.filter((item): item is string => typeof item === "string" && item.trim().length > 8).map((item) => item.trim().slice(0, 220)).slice(0, 4)
+      ? json.tools.filter((item): item is string => typeof item === "string" && item.trim().length > 8).map((item) => item.trim().slice(0, 260)).slice(0, 4)
       : [];
-    if (!temperament || !strength || !shadow || !heart || tools.length < 3) return null;
-    const whole = [temperament, strength, shadow, heart, ...tools].join(" ");
+    if (!temperament || !prism || !strength || !shadow || !heart || tools.length < 3) return null;
+    const whole = [temperament, prism, strength, shadow, heart, ...tools].join(" ");
     if (forbidden.test(whole)) return null;
-    return { temperament, strength, shadow, tools, heart };
+    return { temperament, prism, strength, shadow, tools, heart };
   } catch {
     return null;
   }
@@ -107,7 +111,7 @@ export const composeLetter = createServerFn({ method: "POST" })
       try {
         const response = await fetch("https://api.x.ai/v1/chat/completions", {
           method: "POST",
-          signal: AbortSignal.timeout(14000),
+          signal: AbortSignal.timeout(22000),
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${apiKey}`,
@@ -115,7 +119,7 @@ export const composeLetter = createServerFn({ method: "POST" })
           body: JSON.stringify({
             model: "grok-4.5",
             temperature: 0.5,
-            max_tokens: 420,
+            max_tokens: 900,
             messages: [
               { role: "system", content: SYSTEM },
               { role: "user", content: user },

@@ -5,8 +5,8 @@ import { playerOf } from "@/lib/leela/listen";
 let pending: Promise<boolean> | null = null;
 
 export function ensureLetter() {
-  const ready = useGame.getState().letter?.temperament;
-  if (ready) return Promise.resolve(true);
+  const letter = useGame.getState().letter;
+  if (letter?.temperament && letter.prism) return Promise.resolve(true);
   if (pending) return pending;
   pending = writeLetter().finally(() => {
     pending = null;

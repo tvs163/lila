@@ -9,7 +9,7 @@ export function LetterKeeper() {
   const letter = useGame((state) => state.letter);
   const moves = useGame((state) => state.log.filter((entry) => entry.kind !== "unborn").length);
   useEffect(() => {
-    if (moves < 3 || letter?.temperament) return;
+    if (moves < 3 || (letter?.temperament && letter.prism)) return;
     void ensureLetter();
   }, [moves, letter]);
   return null;
@@ -21,7 +21,7 @@ export function LetterCard() {
   const intention = useGame((state) => state.intention);
   const log = useGame((state) => state.log);
   const letter = useGame((state) => state.letter);
-  const ready = Boolean(letter?.temperament && letter.strength && letter.shadow && letter.heart && letter.tools?.length);
+  const ready = Boolean(letter?.temperament && letter.prism && letter.strength && letter.shadow && letter.heart && letter.tools?.length);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
@@ -32,7 +32,7 @@ export function LetterCard() {
     try {
       const ok = await ensureLetter();
       const current = useGame.getState().letter;
-      if (!ok || !current?.temperament) {
+      if (!ok || !current?.temperament || !current.prism) {
         setError("Письмо ещё не собралось. Нажми ещё раз через несколько секунд.");
         return;
       }
@@ -83,8 +83,12 @@ export function LetterCard() {
         <p className="mt-2">{intention}</p>
       </section>
       <section>
-        <h4 className="text-sm tracking-widest text-gold uppercase">Темперамент</h4>
+        <h4 className="text-sm tracking-widest text-gold uppercase">Внутренний уклад</h4>
         <p className="mt-2">{letter.temperament}</p>
+      </section>
+      <section>
+        <h4 className="text-sm tracking-widest text-gold uppercase">Как ты видишь этот вопрос</h4>
+        <p className="mt-2">{letter.prism}</p>
       </section>
       <section>
         <h4 className="text-sm tracking-widest text-gold uppercase">Сильная сторона темперамента</h4>

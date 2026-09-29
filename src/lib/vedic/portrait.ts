@@ -63,20 +63,24 @@ export function birthPortrait(birth: BirthProfile, tendency = ""): string {
   return `Рождение: ${when}. Психоматрица по дате: ${line(byDate)}. С часом рождения: ${line(withTime)}. Ведическая карта, Лахири: ${sky}.${lean}`.slice(0, 1600);
 }
 
-const WAY: Record<string, string> = {
-  Овен: "быстрое действие",
-  Лев: "быстрое действие",
-  Стрелец: "быстрое действие",
-  Телец: "тело и неспешность",
-  Дева: "тело и неспешность",
-  Козерог: "тело и неспешность",
-  Близнецы: "ясную мысль",
-  Весы: "ясную мысль",
-  Водолей: "ясную мысль",
-  Рак: "чувство, которое сначала держит в себе",
-  Скорпион: "чувство, которое сначала держит в себе",
-  Рыбы: "чувство, которое сначала держит в себе",
+const QUALITY: Record<string, string> = {
+  Овен: "сразу действует и плохо переносит ожидание",
+  Телец: "держит через тело, устойчивость и медленный ритм",
+  Близнецы: "сначала разбирает словами и ищет, как это назвать",
+  Рак: "чувствует раньше, чем понимает, и бережёт своё",
+  Лев: "хочет, чтобы это было живым и заметным",
+  Дева: "ищет точность и поправляет детали",
+  Весы: "смотрит через отношение с другим человеком",
+  Скорпион: "идёт вглубь и не отпускает, пока не дойдёт до сути",
+  Стрелец: "ищет смысл шире, чем сама ситуация",
+  Козерог: "держит через долг, срок и выдержку",
+  Водолей: "смотрит со стороны и сверяет со своим законом",
+  Рыбы: "впитывает настроение и легко теряет границу",
 };
+
+function place(sign: string | undefined) {
+  return (sign && QUALITY[sign]) || "ровный, без резкого перекоса";
+}
 
 export function letterSeed(birth: BirthProfile): string {
   const [year, month, day] = birth.date.split("-");
@@ -90,21 +94,27 @@ export function letterSeed(birth: BirthProfile): string {
   const cells = counts([...dateDigits, ...digitsOf(`${first}${second}${third}${fourth}`), ...digitsOf(birth.time)]);
   const strong = CELLS.filter(([digit]) => (cells[digit] ?? 0) >= 2).map(([, name]) => name);
   const thin = CELLS.filter(([digit]) => (cells[digit] ?? 0) === 0).map(([, name]) => name);
-  let manner = "входит в вопрос ровно";
+  let lines = ["встречает мир ровно", "чувствует ровно", "сила ровная", "ум ровный", "действие ровное", "граница ровная"];
   try {
     const chart = readSky(birth);
-    const enter = WAY[chart.lagna.sign] ?? "ровный шаг";
-    const hold = WAY[chart.moon.sign] ?? "ровный шаг";
-    manner = `входит через ${enter}; важное держит через ${hold}`;
+    const sign = (name: string) => chart.planets.find((planet) => planet.name === name)?.sign;
+    lines = [
+      `как встречает мир: ${place(chart.lagna.sign)}`,
+      `как чувствует: ${place(chart.moon.sign)}`,
+      `куда тянется сила: ${place(sign("Солнце"))}`,
+      `как думает: ${place(sign("Меркурий"))}`,
+      `как действует: ${place(sign("Марс"))}`,
+      `как держит границу: ${place(sign("Сатурн"))}`,
+    ];
   } catch {
-    manner = "входит в вопрос ровно";
+    lines = ["встречает мир ровно"];
   }
   return [
-    manner,
-    strong.length ? `опора: ${strong.slice(0, 3).join(", ")}` : "",
+    ...lines,
+    strong.length ? `внутренняя опора: ${strong.slice(0, 4).join(", ")}` : "",
     thin.length ? `тонкое место: ${thin.slice(0, 3).join(", ")}` : "",
   ]
     .filter(Boolean)
     .join(". ")
-    .slice(0, 420);
+    .slice(0, 900);
 }

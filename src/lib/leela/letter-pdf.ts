@@ -66,8 +66,10 @@ export async function downloadLetter(letter: PathLetter, nickname: string, inten
   y -= 18;
   write("Твой вопрос", 13, gold, 8);
   write(intention, 11, ink, 14);
-  write("Темперамент", 13, gold, 8);
+  write("Внутренний уклад", 13, gold, 8);
   write(letter.temperament, 11, ink, 14);
+  write("Как ты видишь этот вопрос", 13, gold, 8);
+  write(letter.prism, 11, ink, 14);
   write("Сильная сторона темперамента", 13, gold, 8);
   write(letter.strength, 11, ink, 14);
   write("Слабая сторона темперамента", 13, gold, 8);
