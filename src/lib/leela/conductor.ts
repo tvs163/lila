@@ -90,11 +90,6 @@ export function conduct(outcome: RollOutcome, intention: string): Speech {
   }
 
   const questions = [dest.question];
-  if (outcome.kind !== "win") {
-    questions.push(
-      `Если убрать ощущение «${dest.name.toLowerCase()}», что в вопросе «${wish}» откроется следом?`,
-    );
-  }
 
   return {
     move,
