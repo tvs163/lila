@@ -34,6 +34,7 @@ export function LilaApp() {
   return (
     <Shell>
       <QuietPulse />
+      <div key={seenIntro ? phase : "intro"} className="cosmic-screen">
       {phase === "intro" || !seenIntro ? <Intro /> : null}
       {phase === "arrival" && seenIntro ? <Arrival /> : null}
       {phase === "birth" && seenIntro ? <Birth /> : null}
@@ -53,6 +54,7 @@ export function LilaApp() {
       ) : null}
       {phase === "intention" && seenIntro ? <Intention /> : null}
       {phase === "play" && seenIntro ? <Play /> : null}
+      </div>
     </Shell>
   );
 }

@@ -67,7 +67,7 @@ export function BoardMap({
           <p className="text-sm tracking-widest text-gold uppercase">Поле</p>
           <h2 className="font-display text-3xl">План «{plane}»</h2>
           <p className="text-sm text-muted tabular-nums">
-            {position > 0 ? `Клетка ${position} из 72` : "Ещё не рождён"}
+            {position > 0 ? `Клетка ${position} из 72` : "Поле ждёт первый бросок"}
           </p>
         </div>
         <div className="relative grid grid-cols-9 gap-1">
@@ -92,8 +92,8 @@ export function BoardMap({
               const marks = (
                 <>
                   {id}
-                  {arrow ? <span className="absolute top-0.5 right-0.5 size-1 rounded-full bg-gold" /> : null}
-                  {snake ? <span className="absolute right-0.5 bottom-0.5 size-1 rounded-full bg-muted" /> : null}
+                  {arrow ? <span className="cell-spark cell-spark-up" /> : null}
+                  {snake ? <span className="cell-spark cell-spark-down" /> : null}
                 </>
               );
               if (!open) {

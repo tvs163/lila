@@ -201,14 +201,14 @@ export function Play() {
                 role="tab"
                 aria-selected={pane === id}
                 onClick={() => setPane(id)}
-                className={`min-h-11 flex-1 rounded-full border text-sm ${pane === id ? "border-gold text-gold" : "border-line text-muted"}`}
+                className={`tab-pill min-h-11 flex-1 rounded-full border text-sm ${pane === id ? "tab-pill-on border-gold text-gold" : "border-line text-muted"}`}
               >
                 {label}
               </button>
             ))}
           </div>
 
-          <div className="mt-4">
+          <div key={pane} className="cosmic-pane mt-4">
             {pane === "field" ? (
               <div className="flex flex-col gap-4">
                 <BoardMap position={position} readingId={readingId} visited={visited} move={shown ?? null} onPick={openCell} />

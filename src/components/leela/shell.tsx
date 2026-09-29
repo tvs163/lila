@@ -21,8 +21,13 @@ export function Shell({ children }: { children: ReactNode }) {
   return (
     <div className="relative min-h-dvh overflow-x-hidden bg-bg text-fg">
       <div className="pointer-events-none fixed inset-0 overflow-hidden" aria-hidden>
+        <div className="cosmic-veil" />
+        <div className="wisdom-light" />
         <div className="nebula nebula-a" />
         <div className="nebula nebula-b" />
+        <div className="nebula nebula-c" />
+        <div className="nebula nebula-d" />
+        <div className="nebula nebula-e" />
         {STARS.map((star) => (
           <span key={star.index} className="star" style={star.style} />
         ))}
