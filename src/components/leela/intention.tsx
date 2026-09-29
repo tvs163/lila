@@ -25,7 +25,7 @@ export function Intention() {
         <LilaLogo />
         <h1 className="mt-4 font-display text-5xl">{nickname}, с чем ты входишь</h1>
         <p className="mt-4 text-muted">
-          Теперь ты в состоянии «сейчас». Задай вопрос, который создаёт в тебе дисбаланс, и мы начнём диалог с проводником.
+          Теперь ты в состоянии «сейчас». Я оставляю тебя наедине с собой. Задай вопрос, который создаёт в тебе дисбаланс?
         </p>
       </header>
       <label className="block">
