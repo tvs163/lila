@@ -48,7 +48,7 @@ export function Metrika() {
       clickmap: true,
       trackLinks: true,
       accurateTrackBounce: true,
-      webvisor: false,
+      webvisor: true,
       referrer: document.referrer,
       url: location.href,
     });
