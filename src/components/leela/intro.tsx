@@ -1,10 +1,9 @@
 import { useState, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
+import { DustField } from "@/components/leela/dust-field";
 import { Gate, LilaLogo } from "@/components/leela/shell";
 import { primeOm } from "@/lib/leela/om";
 import { useGame } from "@/lib/game-store";
-
-const DUST = [8, 22, 37, 51, 66, 78, 14, 44, 61, 86, 29, 72];
 
 const ABOUT = [
   "Лила — древняя игра самопознания. Её первое имя — Джняна-чаупада, «игра мудрости»: джняна — мудрость, чаупада — игра в кости.",
@@ -38,7 +37,8 @@ export function Intro() {
   const [slide, setSlide] = useState(0);
 
   return (
-    <main className="mx-auto flex min-h-dvh w-full max-w-lg flex-col overflow-y-auto px-5 py-10 pb-24">
+    <main className="relative z-10 mx-auto flex min-h-dvh w-full max-w-lg flex-col overflow-y-auto px-5 py-10 pb-24">
+      <DustField />
       <div className="my-auto flex flex-col gap-8">
         <header className="relative">
           <Gate className="pointer-events-none absolute -top-6 left-1/2 h-40 w-full -translate-x-1/2 text-gold opacity-40" />
@@ -51,15 +51,6 @@ export function Intro() {
         </header>
 
         <div key={slide} className="ink-sheet relative flex flex-col gap-4">
-          {DUST.map((left, index) => (
-            <span
-              key={`${slide}-${left}`}
-              className="ink-mote"
-              style={{ left: `${left}%`, animationDelay: `${(index % 6) * 0.18}s` }}
-              aria-hidden
-            />
-          ))}
-
           {slide === 0 ? (
             ABOUT.map((line, index) => (
               <Ink key={line} at={index + 1}>
