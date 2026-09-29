@@ -70,6 +70,8 @@ export function Play() {
 
   const square = readingId > 0 ? squareById(readingId) : null;
   const latest = log[log.length - 1];
+  const markAt = useGame((state) => state.markAt);
+  const needsEcho = Boolean(latest) && !won && markAt !== latest.at;
   const wantedKey = birth && intention.trim().length >= 4 ? briefKeyOf(birth, intention) : "";
   const briefReady = Boolean(wantedKey) && briefKey === wantedKey && (Boolean(innerBrief) || briefStatus === "quiet");
   const briefPending = Boolean(wantedKey) && !briefReady;
@@ -117,11 +119,23 @@ export function Play() {
     const current = spinRef.current;
     if (!current) return;
     spinRef.current = null;
+    const snap = useGame.getState();
+    const previous = snap.log[snap.log.length - 1];
+    const echo =
+      previous && snap.markAt === previous.at
+        ? snap.markWhere === "body"
+          ? "в теле"
+          : snap.markWhere === "thought"
+            ? "в мысли"
+            : snap.markWhere === "feeling"
+              ? "в чувстве"
+              : ""
+        : "";
     const at = commitThrow(current);
     setSpin(null);
     throwing.current = false;
     setListening(at);
-    void listenArrive({ guide, gender, intention, journal, birth, outcome: current, brief: useGame.getState().innerBrief }).then((result) => {
+    void listenArrive({ guide, gender, intention, journal, birth, outcome: current, brief: snap.innerBrief, echo }).then((result) => {
       if (result.ok) saveVoice(at, "arrive", { speech: result.speech, question: result.question });
       else setListening(null);
     });
@@ -221,6 +235,8 @@ export function Play() {
                   <p className="rounded-3xl border border-line bg-bg-raise px-4 py-4 text-sm text-muted">
                     Проводник собирает вопрос, карту и матрицу. Первый ход откроется, когда это будет готово.
                   </p>
+                ) : needsEcho && latest ? (
+                  <EchoChoice at={latest.at} />
                 ) : ready ? (
                   <div className="flex flex-col gap-2">
                     <Button className="w-full tracking-wide" variant="glow" onClick={() => (skipBreath ? launch() : setBreathOpen(true))}>
@@ -277,10 +293,10 @@ export function Play() {
                         </Button>
                       </div>
                     ) : null}
-                    {letterOpen ? (
-                      <LetterCard />
-                    ) : null}
-                    {won ? null : (
+                    {letterOpen ? <LetterCard /> : null}
+                    {needsEcho && latest ? (
+                      <EchoChoice at={latest.at} />
+                    ) : won ? null : (
                       <Button className="mt-6 w-full" variant="glow" onClick={() => setPane("field")}>
                         Следующий ход
                       </Button>
@@ -365,7 +381,7 @@ function About() {
             </div>
             <h3 className="mt-5 font-display text-2xl text-fg">Правила просты</h3>
             <div className="mt-3 flex flex-col gap-3 text-muted">
-              <p>Ты кидаешь кость. Открывается состояние, в котором этот вопрос сейчас живёт.</p>
+              <p>Ты кидаешь кость. Открывается состояние, в котором этот вопрос сейчас живёт. Перед следующим ходом отмечаешь, где это отозвалось: в теле, в мысли или в чувстве.</p>
               <p>Проводник задаёт один вопрос. Твоя часть — быть честным с собой. Отвечать вслух не нужно.</p>
               <p>Если захочешь, оставишь заметку только себе. Чем прямее смотришь, тем понятнее, что с этим вопросом делать.</p>
               <p>Обычно это около часа. Можно уйти и вернуться — поле помнит, где ты остановился. После третьего хода откроется письмо о тебе: сила, слабина и чем опираться в своём вопросе.</p>
@@ -429,5 +445,27 @@ function PathMenu({
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>
+  );
+}
+
+function EchoChoice({ at }: { at: number }) {
+  const setMark = useGame((state) => state.setMark);
+  const choices = [
+    ["body", "В теле"],
+    ["thought", "В мысли"],
+    ["feeling", "В чувстве"],
+  ] as const;
+
+  return (
+    <div className="mt-6 border-t border-line pt-5">
+      <p className="text-sm text-muted">Где это отозвалось? Следующий ход откроется после выбора.</p>
+      <div className="mt-3 flex flex-col gap-2">
+        {choices.map(([where, label]) => (
+          <Button key={where} variant="quiet" onClick={() => setMark(at, where)}>
+            {label}
+          </Button>
+        ))}
+      </div>
+    </div>
   );
 }

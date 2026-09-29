@@ -17,6 +17,7 @@ type ListenBase = {
   birth: BirthProfile | null;
   outcome: RollOutcome;
   brief?: string;
+  echo?: string;
 };
 
 export function playerOf(gender: Gender | null | undefined, guide: GuideId | null): "woman" | "man" {
@@ -50,6 +51,7 @@ function payload(base: ListenBase, kind: "arrive" | "reply", reply = "") {
     brief: (base.brief ?? "").slice(0, 900),
     reply: reply.slice(0, 800),
     earlier: base.journal.slice(0, 3).map((entry) => entry.text.slice(0, 280)),
+    echo: (base.echo ?? "").slice(0, 40),
   };
 }
 
@@ -75,6 +77,7 @@ export async function listenPrepare(
         brief: "",
         reply: "",
         earlier: [],
+        echo: "",
       },
     });
   } catch {

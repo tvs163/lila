@@ -5,6 +5,7 @@ import { applyRoll, canRollNow, rollDie, rollsForTurn, SIX_BONUS, type RollOutco
 import { mirrorReply } from "@/lib/leela/conductor";
 import type { PathLetter } from "@/lib/leela/letter";
 
+export type EchoWhere = "body" | "thought" | "feeling";
 export type GuideId = "agni" | "soma";
 export type Gender = "woman" | "man" | "open";
 export type Phase = "intro" | "arrival" | "birth" | "breath" | "intention" | "play";
@@ -59,6 +60,8 @@ type Game = PathState & {
   briefKey: string;
   briefStatus: "idle" | "reading" | "ready" | "quiet";
   letter: PathLetter | null;
+  markAt: number | null;
+  markWhere: EchoWhere | null;
   begin: () => void;
   setSound: (sound: boolean) => void;
   setArrival: (nickname: string, gender: Gender, guide: GuideId) => void;
@@ -78,6 +81,7 @@ type Game = PathState & {
   setBriefStatus: (status: "idle" | "reading" | "ready" | "quiet") => void;
   saveBrief: (key: string, speech: string) => void;
   saveLetter: (letter: PathLetter) => void;
+  setMark: (at: number, where: EchoWhere) => void;
   permitTurn: () => void;
   newPath: () => void;
   editBirth: () => void;
@@ -113,6 +117,8 @@ const initial = {
   briefKey: "",
   briefStatus: "idle" as const,
   letter: null as PathLetter | null,
+  markAt: null as number | null,
+  markWhere: null as EchoWhere | null,
   ...emptyPath,
 };
 
@@ -209,6 +215,7 @@ export const useGame = create<Game>()(
       saveBrief: (key, speech) =>
         set({ briefKey: key, innerBrief: speech, briefStatus: speech ? "ready" : "quiet" }),
       saveLetter: (letter) => set({ letter }),
+      setMark: (at, where) => set({ markAt: at, markWhere: where }),
       replyToTurn: (text) => {
         const state = get();
         const last = state.log[state.log.length - 1];
@@ -231,7 +238,7 @@ export const useGame = create<Game>()(
         if (!last || last.kind !== "unborn") return;
         set({ answeredAt: last.at, probeFor: null });
       },
-      newPath: () => set({ ...emptyPath, phase: "breath", journal: get().journal, voices: [], letter: null }),
+      newPath: () => set({ ...emptyPath, phase: "breath", journal: get().journal, voices: [], letter: null, markAt: null, markWhere: null }),
       editBirth: () => set({ phase: "birth" }),
       forget: () => {
         resetQuiet();
@@ -241,7 +248,7 @@ export const useGame = create<Game>()(
     {
       name: "lila-journey",
       skipHydration: true,
-      version: 8,
+      version: 9,
       migrate: (persisted, version) => {
         if (!persisted || typeof persisted !== "object") return persisted;
         const state = persisted as {
@@ -259,6 +266,8 @@ export const useGame = create<Game>()(
           innerBrief?: string;
           briefKey?: string;
           letter?: PathLetter | null;
+          markAt?: number | null;
+          markWhere?: EchoWhere | null;
         };
         if (version < 2) {
           if (typeof state.extraLeft !== "number") state.extraLeft = state.extraRoll ? SIX_BONUS : 0;
@@ -281,6 +290,10 @@ export const useGame = create<Game>()(
           if (typeof state.briefKey !== "string") state.briefKey = "";
         }
         if (version < 8 && state.letter == null) state.letter = null;
+        if (version < 9) {
+          state.markAt = null;
+          state.markWhere = null;
+        }
         return state;
       },
       partialize: (state) => ({
@@ -297,6 +310,8 @@ export const useGame = create<Game>()(
         innerBrief: state.innerBrief,
         briefKey: state.briefKey,
         letter: state.letter,
+        markAt: state.markAt,
+        markWhere: state.markWhere,
         intention: state.intention,
         position: state.position,
         visited: state.visited,
