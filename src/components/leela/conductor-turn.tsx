@@ -12,6 +12,7 @@ export function ConductorTurn({ at }: { at?: number }) {
   const speech = conduct(latest, intention);
   const heard = voices.find((item) => item.at === latest.at);
   const question = heard?.arrive?.question || speech.questions[0] || "";
+  const next = heard?.arrive?.next || speech.questions[1] || "";
   const listening = listeningAt === latest.at && !heard?.arrive;
 
   return (
@@ -26,6 +27,12 @@ export function ConductorTurn({ at }: { at?: number }) {
         <div className="question-core mt-5 rounded-3xl border border-gold bg-bg-raise px-5 py-5">
           <p className="text-sm tracking-widest text-gold uppercase">Вопрос проводника</p>
           <p className="mt-3 font-display text-3xl leading-snug text-fg">{question}</p>
+          {next ? (
+            <>
+              <p className="mt-5 text-sm tracking-widest text-gold uppercase">Следующая ступень</p>
+              <p className="mt-3 font-display text-2xl leading-snug text-fg">{next}</p>
+            </>
+          ) : null}
         </div>
       ) : null}
     </div>

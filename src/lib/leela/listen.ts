@@ -7,7 +7,7 @@ import { readInnerChart } from "@/lib/vedic/chart";
 import { birthPortrait } from "@/lib/vedic/portrait";
 import { personalNote } from "@/lib/vedic/voice";
 
-export type GuideLine = { speech: string; question: string };
+export type GuideLine = { speech: string; question: string; next?: string };
 
 type ListenBase = {
   guide: GuideId | null;

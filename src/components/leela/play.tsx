@@ -132,7 +132,7 @@ export function Play() {
     throwing.current = false;
     setListening(at);
     void listenArrive({ guide, gender, intention, journal, birth, outcome: current, brief: snap.innerBrief, echo }).then((result) => {
-      if (result.ok) saveVoice(at, "arrive", { speech: result.speech, question: result.question });
+      if (result.ok) saveVoice(at, "arrive", { speech: result.speech, question: result.question, next: result.next });
       else setListening(null);
     });
   }, [birth, commitThrow, gender, guide, intention, journal, saveVoice, setListening]);

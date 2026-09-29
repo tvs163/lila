@@ -28,7 +28,7 @@ export type JournalEntry = {
 };
 
 export type LogEntry = RollOutcome & { at: number };
-export type GuideVoice = { speech: string; question: string };
+export type GuideVoice = { speech: string; question: string; next?: string };
 export type TurnVoice = { at: number; arrive?: GuideVoice; reply?: GuideVoice };
 
 type PathState = {

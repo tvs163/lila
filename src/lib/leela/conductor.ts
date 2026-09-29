@@ -92,7 +92,7 @@ export function conduct(outcome: RollOutcome, intention: string): Speech {
   const questions = [dest.question];
   if (outcome.kind !== "win") {
     questions.push(
-      `Где в «${wish}» состояние «${dest.name}» уже действует, а где ты говоришь о запросе так, будто этой клетки нет?`,
+      `Если убрать ощущение «${dest.name.toLowerCase()}», что в вопросе «${wish}» откроется следом?`,
     );
   }
 
