@@ -219,8 +219,8 @@ export function Play() {
                 ) : null}
                 {won ? (
                   <div className="rounded-3xl border border-gold-dim bg-bg-raise p-5">
-                    <h3 className="font-display text-3xl">Ты на 68-й</h3>
-                    <p className="mt-2 text-muted">Путь по этому вопросу пройден. Письмо — во вкладке «Слово».</p>
+                    <h3 className="font-display text-3xl">Игра закончена</h3>
+                    <p className="mt-2 text-muted">Ты на 68-й клетке. Дальше бросков нет. Письмо о тебе — во вкладке «Слово».</p>
                     <Button className="mt-4 w-full" variant="glow" onClick={() => setPane("word")}>
                       Открыть письмо
                     </Button>
@@ -264,6 +264,13 @@ export function Play() {
                 ) : shown ? (
                   <>
                     <ConductorTurn at={shown.at} />
+                    {won ? (
+                      <div className="mt-6 rounded-3xl border border-gold bg-bg-raise px-5 py-5">
+                        <p className="text-sm tracking-widest text-gold uppercase">Игра закончена</p>
+                        <p className="mt-3 font-display text-3xl leading-snug">Это 68-я клетка. Конец этой игры.</p>
+                        <p className="mt-3 text-muted">Дальше бросков нет. Ниже письмо о тебе в этом вопросе. Его можно скачать.</p>
+                      </div>
+                    ) : null}
                     {needsEcho && latest ? <EchoChoice at={latest.at} /> : null}
                     {won ? null : (
                       <Button className="mt-6 w-full" variant="glow" disabled={needsEcho} onClick={() => setPane("field")}>
